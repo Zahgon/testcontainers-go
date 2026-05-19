@@ -1,9 +1,6 @@
 package neo4j
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/testcontainers/testcontainers-go"
 )
 
@@ -24,40 +21,23 @@ const (
 
 // WithoutAuthentication disables authentication.
 func WithoutAuthentication() testcontainers.CustomizeRequestOption {
-	return WithAdminPassword("")
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // WithAdminPassword sets the admin password for the default account
 // An empty string disables authentication.
 // The default password is "password".
 func WithAdminPassword(adminPassword string) testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		pwd := "none"
-		if adminPassword != "" {
-			pwd = "neo4j/" + adminPassword
-		}
-
-		req.Env["NEO4J_AUTH"] = pwd
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // WithLabsPlugin registers one or more Neo4jLabsPlugin for download and server startup.
 // There might be plugins not supported by your selected version of Neo4j.
 func WithLabsPlugin(plugins ...LabsPlugin) testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		rawPluginValues := make([]string, len(plugins))
-		for i := 0; i < len(plugins); i++ {
-			rawPluginValues[i] = string(plugins[i])
-		}
-
-		if len(plugins) > 0 {
-			req.Env["NEO4JLABS_PLUGINS"] = fmt.Sprintf(`["%s"]`, strings.Join(rawPluginValues, `","`))
-		}
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // WithNeo4jSetting adds Neo4j a single configuration setting to the container.
@@ -67,9 +47,8 @@ func WithLabsPlugin(plugins ...LabsPlugin) testcontainers.CustomizeRequestOption
 // See WithNeo4jSettings to add multiple settings at once
 // Note: credentials must be configured with WithAdminPassword
 func WithNeo4jSetting(key, value string) testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		return addSetting(req, key, value)
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // WithNeo4jSettings adds multiple Neo4j configuration settings to the container.
@@ -79,15 +58,8 @@ func WithNeo4jSetting(key, value string) testcontainers.CustomizeRequestOption {
 // See WithNeo4jSetting to add a single setting
 // Note: credentials must be configured with WithAdminPassword
 func WithNeo4jSettings(settings map[string]string) testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		for key, value := range settings {
-			if err := addSetting(req, key, value); err != nil {
-				return err
-			}
-		}
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // Deprecated: use testcontainers.WithLogger instead
@@ -100,35 +72,21 @@ var (
 )
 
 func addSetting(req *testcontainers.GenericContainerRequest, key string, newVal string) error {
-	normalizedKey := formatNeo4jConfig(key)
-	if oldVal, found := req.Env[normalizedKey]; found {
-		// make sure AUTH is not overwritten by a setting
-		if key == "AUTH" {
-			return fmt.Errorf("setting %q is not permitted, WithAdminPassword has already been set", normalizedKey)
-		}
-
-		req.Logger.Printf("setting %q with value %q is now overwritten with value %q\n", []any{key, oldVal, newVal}...)
-	}
-
-	req.Env[normalizedKey] = newVal
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
-func formatNeo4jConfig(name string) string {
-	result := strings.ReplaceAll(name, "_", "__")
-	result = strings.ReplaceAll(result, ".", "_")
-	return "NEO4J_" + result
-}
+// make sure AUTH is not overwritten by a setting
+
+func formatNeo4jConfig(name string) string { _ = "STUB: not implemented"; return "" }
 
 // WithAcceptCommercialLicenseAgreement sets the environment variable
 // NEO4J_ACCEPT_LICENSE_AGREEMENT to "yes", indicating that the user accepts
 // the commercial licence agreement of Neo4j Enterprise Edition. The license
 // agreement is available at https://neo4j.com/terms/licensing/.
 func WithAcceptCommercialLicenseAgreement() testcontainers.CustomizeRequestOption {
-	return testcontainers.WithEnv(map[string]string{
-		"NEO4J_ACCEPT_LICENSE_AGREEMENT": "yes",
-	})
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // WithAcceptEvaluationLicenseAgreement sets the environment variable
@@ -137,7 +95,6 @@ func WithAcceptCommercialLicenseAgreement() testcontainers.CustomizeRequestOptio
 // agreement is available at https://neo4j.com/terms/enterprise_us/. Please
 // read the terms of the evaluation agreement before you accept.
 func WithAcceptEvaluationLicenseAgreement() testcontainers.CustomizeRequestOption {
-	return testcontainers.WithEnv(map[string]string{
-		"NEO4J_ACCEPT_LICENSE_AGREEMENT": "eval",
-	})
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }

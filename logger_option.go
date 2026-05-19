@@ -16,9 +16,8 @@ var (
 // This can be given a TestLogger to collect the logs from testcontainers into a
 // test case.
 func WithLogger(logger log.Logger) LoggerOption {
-	return LoggerOption{
-		logger: logger,
-	}
+	_ = "STUB: not implemented"
+	return *new(LoggerOption)
 }
 
 // LoggerOption is a generic option that sets the logger to be used.
@@ -30,16 +29,16 @@ type LoggerOption struct {
 
 // ApplyGenericTo implements GenericProviderOption.
 func (o LoggerOption) ApplyGenericTo(opts *GenericProviderOptions) {
-	opts.Logger = o.logger
+	_ = "STUB: not implemented"
+	return
+
+	// ApplyDockerTo implements DockerProviderOption.
 }
 
-// ApplyDockerTo implements DockerProviderOption.
-func (o LoggerOption) ApplyDockerTo(opts *DockerProviderOptions) {
-	opts.Logger = o.logger
-}
+func (o LoggerOption) ApplyDockerTo(opts *DockerProviderOptions) { _ = "STUB: not implemented"; return }
 
 // Customize implements ContainerCustomizer.
 func (o LoggerOption) Customize(req *GenericContainerRequest) error {
-	req.Logger = o.logger
+	_ = "STUB: not implemented"
 	return nil
 }

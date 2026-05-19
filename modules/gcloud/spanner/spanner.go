@@ -2,10 +2,8 @@ package spanner
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const (
@@ -22,53 +20,14 @@ type Container struct {
 }
 
 // ProjectID returns the project ID of the Spanner container.
-func (c *Container) ProjectID() string {
-	return c.settings.ProjectID
-}
+func (c *Container) ProjectID() string { _ = "STUB: not implemented"; return "" }
 
 // URI returns the URI of the Spanner container.
-func (c *Container) URI() string {
-	return c.settings.URI
-}
+func (c *Container) URI() string { _ = "STUB: not implemented"; return "" }
 
 // Run creates an instance of the Spanner GCloud container type.
 // The URI uses the empty string as the protocol.
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*Container, error) {
-	moduleOpts := make([]testcontainers.ContainerCustomizer, 0, 2+len(opts))
-	moduleOpts = append(moduleOpts,
-		testcontainers.WithExposedPorts(defaultPort),
-		testcontainers.WithWaitStrategy(
-			wait.ForListeningPort(defaultPort),
-			wait.ForLog("Cloud Spanner emulator running"),
-		),
-	)
-
-	settings := defaultOptions()
-	for _, opt := range opts {
-		if apply, ok := opt.(Option); ok {
-			if err := apply(&settings); err != nil {
-				return nil, err
-			}
-		}
-	}
-
-	moduleOpts = append(moduleOpts, opts...)
-
-	ctr, err := testcontainers.Run(ctx, img, moduleOpts...)
-	var c *Container
-	if ctr != nil {
-		c = &Container{Container: ctr, settings: settings}
-	}
-	if err != nil {
-		return c, fmt.Errorf("run spanner: %w", err)
-	}
-
-	portEndpoint, err := c.PortEndpoint(ctx, defaultPort, "")
-	if err != nil {
-		return c, fmt.Errorf("port endpoint: %w", err)
-	}
-
-	c.settings.URI = portEndpoint
-
-	return c, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }

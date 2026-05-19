@@ -24,21 +24,13 @@ type Option func(*Options) error
 
 // Customize is a NOOP. It's defined to satisfy the testcontainers.ContainerCustomizer interface.
 func (o Option) Customize(*testcontainers.GenericContainerRequest) error {
+	_ = "STUB: not implemented"
 	// NOOP to satisfy interface.
 	return nil
 }
 
 // DefaultOptions returns a new Options instance with the default project ID.
-func DefaultOptions() Options {
-	return Options{
-		ProjectID: DefaultProjectID,
-	}
-}
+func DefaultOptions() Options { _ = "STUB: not implemented"; return *new(Options) }
 
 // WithProjectID sets the project ID for the GCloud container.
-func WithProjectID(projectID string) Option {
-	return func(o *Options) error {
-		o.ProjectID = projectID
-		return nil
-	}
-}
+func WithProjectID(projectID string) Option { _ = "STUB: not implemented"; return *new(Option) }

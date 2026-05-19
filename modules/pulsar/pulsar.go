@@ -2,10 +2,7 @@ package pulsar
 
 import (
 	"context"
-	"fmt"
 	"io"
-	"net"
-	"strings"
 
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
@@ -34,52 +31,25 @@ type Container struct {
 }
 
 func (c *Container) BrokerURL(ctx context.Context) (string, error) {
-	return c.resolveURL(ctx, defaultPulsarPort)
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 func (c *Container) HTTPServiceURL(ctx context.Context) (string, error) {
-	return c.resolveURL(ctx, defaultPulsarAdminPort)
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 func (c *Container) resolveURL(ctx context.Context, port string) (string, error) {
-	provider, err := testcontainers.NewDockerProvider()
-	if err != nil {
-		return "", err
-	}
-	defer provider.Close()
-
-	host, err := provider.DaemonHost(ctx)
-	if err != nil {
-		return "", err
-	}
-
-	pulsarPort, err := c.MappedPort(ctx, port)
-	if err != nil {
-		return "", err
-	}
-
-	proto := "pulsar"
-	if port == defaultPulsarAdminPort {
-		proto = "http"
-	}
-
-	return fmt.Sprintf("%s://%s", proto, net.JoinHostPort(host, pulsarPort.Port())), nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // WithFunctionsWorker enables the functions worker, which will override the default pulsar command
 // and add a waiting strategy for the functions worker
 func WithFunctionsWorker() testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		if err := testcontainers.WithCmd("/bin/bash", "-c", defaultPulsarCmd)(req); err != nil {
-			return err
-		}
-
-		ss := make([]wait.Strategy, 0, 1+len(defaultWaitStrategies))
-		ss = append(ss, wait.ForLog("Function worker service started"))
-		ss = append(ss, defaultWaitStrategies...)
-
-		return testcontainers.WithWaitStrategy(ss...)(req)
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // Deprecated: use the testcontainers.WithLogConsumers functional option instead
@@ -87,43 +57,30 @@ func WithFunctionsWorker() testcontainers.CustomizeRequestOption {
 // They will be automatically started and they will follow the container logs,
 // but it's a responsibility of the caller to stop them calling StopLogProducer
 func (c *Container) WithLogConsumers(ctx context.Context, _ ...testcontainers.LogConsumer) {
-	if len(c.LogConsumers) > 0 {
-		// not handling the error because it will return an error if and only if the producer is already started
-		_ = c.StartLogProducer(ctx)
-	}
-	for _, lc := range c.LogConsumers {
-		c.FollowOutput(lc)
-	}
+	_ = "STUB: not implemented"
+	return
 }
+
+// not handling the error because it will return an error if and only if the producer is already started
 
 // WithPulsarEnv allows to use the native APIs and set each variable with PULSAR_PREFIX_ as prefix.
 func WithPulsarEnv(configVar string, configValue string) testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		return testcontainers.WithEnv(map[string]string{"PULSAR_PREFIX_" + configVar: configValue})(req)
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 func WithTransactions() testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		if err := WithPulsarEnv("transactionCoordinatorEnabled", "true")(req); err != nil {
-			return err
-		}
-
-		// clone defaultWaitStrategies
-		ss := make([]wait.Strategy, 0, 1+len(defaultWaitStrategies))
-		ss = append(ss, wait.ForHTTP(transactionTopicEndpoint).WithPort(defaultPulsarAdminPort).WithStatusCodeMatcher(func(statusCode int) bool {
-			return statusCode == 200
-		}))
-		ss = append(ss, defaultWaitStrategies...)
-
-		return testcontainers.WithWaitStrategy(ss...)(req)
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
+
+// clone defaultWaitStrategies
 
 // Deprecated: use Run instead
 // RunContainer creates an instance of the Pulsar container type
 func RunContainer(ctx context.Context, opts ...testcontainers.ContainerCustomizer) (*Container, error) {
-	return Run(ctx, "apachepulsar/pulsar:4.0.9", opts...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Run creates an instance of the Pulsar container type, being possible to pass a custom request and options
@@ -136,24 +93,6 @@ func RunContainer(ctx context.Context, opts ...testcontainers.ContainerCustomize
 //
 // - command: "/bin/bash -c /pulsar/bin/apply-config-from-env.py /pulsar/conf/standalone.conf && bin/pulsar standalone --no-functions-worker -nss"
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*Container, error) {
-	moduleOpts := make([]testcontainers.ContainerCustomizer, 0, 3+len(opts))
-	moduleOpts = append(moduleOpts,
-		testcontainers.WithExposedPorts(defaultPulsarPort, defaultPulsarAdminPort),
-		testcontainers.WithWaitStrategy(defaultWaitStrategies...),
-		testcontainers.WithCmd("/bin/bash", "-c", strings.Join([]string{defaultPulsarCmd, defaultPulsarCmdWithoutFunctionsWorker}, " ")),
-	)
-
-	moduleOpts = append(moduleOpts, opts...)
-
-	ctr, err := testcontainers.Run(ctx, img, moduleOpts...)
-	var c *Container
-	if ctr != nil {
-		c = &Container{Container: ctr}
-	}
-
-	if err != nil {
-		return c, fmt.Errorf("run pulsar: %w", err)
-	}
-
-	return c, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }

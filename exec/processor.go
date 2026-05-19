@@ -2,11 +2,9 @@ package exec
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"sync"
 
-	"github.com/moby/moby/api/pkg/stdcopy"
 	"github.com/moby/moby/client"
 )
 
@@ -21,15 +19,7 @@ type ProcessOptions struct {
 // - detach: false
 // - attach stdout: true
 // - attach stderr: true
-func NewProcessOptions(cmd []string) *ProcessOptions {
-	return &ProcessOptions{
-		ExecConfig: client.ExecCreateOptions{
-			Cmd:          cmd,
-			AttachStdout: true,
-			AttachStderr: true,
-		},
-	}
-}
+func NewProcessOptions(cmd []string) *ProcessOptions { _ = "STUB: not implemented"; return nil }
 
 // ProcessOption defines a common interface to modify the reader processor
 // These options can be passed to the Exec function in a variadic way to customize the returned Reader instance
@@ -39,27 +29,16 @@ type ProcessOption interface {
 
 type ProcessOptionFunc func(opts *ProcessOptions)
 
-func (fn ProcessOptionFunc) Apply(opts *ProcessOptions) {
-	fn(opts)
-}
+func (fn ProcessOptionFunc) Apply(opts *ProcessOptions) { _ = "STUB: not implemented"; return }
 
-func WithUser(user string) ProcessOption {
-	return ProcessOptionFunc(func(opts *ProcessOptions) {
-		opts.ExecConfig.User = user
-	})
-}
+func WithUser(user string) ProcessOption { _ = "STUB: not implemented"; return *new(ProcessOption) }
 
 func WithWorkingDir(workingDir string) ProcessOption {
-	return ProcessOptionFunc(func(opts *ProcessOptions) {
-		opts.ExecConfig.WorkingDir = workingDir
-	})
+	_ = "STUB: not implemented"
+	return *new(ProcessOption)
 }
 
-func WithEnv(env []string) ProcessOption {
-	return ProcessOptionFunc(func(opts *ProcessOptions) {
-		opts.ExecConfig.Env = env
-	})
-}
+func WithEnv(env []string) ProcessOption { _ = "STUB: not implemented"; return *new(ProcessOption) }
 
 // safeBuffer is a goroutine safe buffer.
 type safeBuffer struct {
@@ -69,60 +48,20 @@ type safeBuffer struct {
 }
 
 // Error sets an error for the next read.
-func (sb *safeBuffer) Error(err error) {
-	sb.mtx.Lock()
-	defer sb.mtx.Unlock()
-
-	sb.err = err
-}
+func (sb *safeBuffer) Error(err error) { _ = "STUB: not implemented"; return }
 
 // Write writes p to the buffer.
 // It is safe for concurrent use by multiple goroutines.
-func (sb *safeBuffer) Write(p []byte) (n int, err error) {
-	sb.mtx.Lock()
-	defer sb.mtx.Unlock()
-
-	return sb.buf.Write(p)
-}
+func (sb *safeBuffer) Write(p []byte) (n int, err error) { _ = "STUB: not implemented"; return 0, nil }
 
 // Read reads up to len(p) bytes into p from the buffer.
 // It is safe for concurrent use by multiple goroutines.
-func (sb *safeBuffer) Read(p []byte) (n int, err error) {
-	sb.mtx.Lock()
-	defer sb.mtx.Unlock()
-
-	if sb.err != nil {
-		return 0, sb.err
-	}
-
-	return sb.buf.Read(p)
-}
+func (sb *safeBuffer) Read(p []byte) (n int, err error) { _ = "STUB: not implemented"; return 0, nil }
 
 // Multiplexed returns a [ProcessOption] that configures the command execution
 // to combine stdout and stderr into a single stream without Docker's multiplexing headers.
-func Multiplexed() ProcessOption {
-	return ProcessOptionFunc(func(opts *ProcessOptions) {
-		// returning fast to bypass those options with a nil reader,
-		// which could be the case when other options are used
-		// to configure the exec creation.
-		if opts.Reader == nil {
-			return
-		}
+func Multiplexed() ProcessOption { _ = "STUB: not implemented"; return *new(ProcessOption) }
 
-		done := make(chan struct{})
-
-		var outBuff safeBuffer
-		var errBuff safeBuffer
-		go func() {
-			defer close(done)
-			if _, err := stdcopy.StdCopy(&outBuff, &errBuff, opts.Reader); err != nil {
-				outBuff.Error(fmt.Errorf("copying output: %w", err))
-				return
-			}
-		}()
-
-		<-done
-
-		opts.Reader = io.MultiReader(&outBuff, &errBuff)
-	})
-}
+// returning fast to bypass those options with a nil reader,
+// which could be the case when other options are used
+// to configure the exec creation.

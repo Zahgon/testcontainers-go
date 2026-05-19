@@ -1,8 +1,6 @@
 package types
 
 import (
-	"encoding/json"
-	"fmt"
 	"time"
 )
 
@@ -34,20 +32,7 @@ type modelResponseJSON struct {
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
-func (mr *ModelResponse) UnmarshalJSON(b []byte) error {
-	var resp modelResponseJSON
-	if err := json.Unmarshal(b, &resp); err != nil {
-		return fmt.Errorf("unmarshal model response: %w", err)
-	}
-	*mr = ModelResponse(resp.modelResponseAlias)
-	mr.Created = time.Unix(resp.CreatedAt, 0)
-	return nil
-}
+func (mr *ModelResponse) UnmarshalJSON(b []byte) error { _ = "STUB: not implemented"; return nil }
 
 // MarshalJSON implements json.Marshaler.
-func (mr ModelResponse) MarshalJSON() ([]byte, error) {
-	return json.Marshal(modelResponseJSON{
-		modelResponseAlias: modelResponseAlias(mr),
-		CreatedAt:          mr.Created.Unix(),
-	})
-}
+func (mr ModelResponse) MarshalJSON() ([]byte, error) { _ = "STUB: not implemented"; return nil, nil }

@@ -9,9 +9,7 @@ type options = shared.Options
 type Option = shared.Option
 
 // defaultOptions returns a new Options instance with the default project ID.
-func defaultOptions() options {
-	return shared.DefaultOptions()
-}
+func defaultOptions() options { _ = "STUB: not implemented"; return *new(options) }
 
 // WithProjectID re-exports the common GCloud WithProjectID option
 var WithProjectID = shared.WithProjectID

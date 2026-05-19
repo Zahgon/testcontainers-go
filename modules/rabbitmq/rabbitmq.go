@@ -1,17 +1,10 @@
 package rabbitmq
 
 import (
-	"bytes"
 	"context"
 	_ "embed"
-	"fmt"
-	"os"
-	"path/filepath"
-	"text/template"
-	"time"
 
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const (
@@ -38,164 +31,58 @@ type RabbitMQContainer struct {
 //
 //nolint:staticcheck //FIXME
 func (c *RabbitMQContainer) AmqpURL(ctx context.Context) (string, error) {
-	endpoint, err := c.PortEndpoint(ctx, DefaultAMQPPort, "")
-	if err != nil {
-		return "", err
-	}
-
-	return fmt.Sprintf("amqp://%s:%s@%s", c.AdminUsername, c.AdminPassword, endpoint), nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // AmqpURL returns the URL for AMQPS clients.
 func (c *RabbitMQContainer) AmqpsURL(ctx context.Context) (string, error) {
-	endpoint, err := c.PortEndpoint(ctx, DefaultAMQPSPort, "")
-	if err != nil {
-		return "", err
-	}
-
-	return fmt.Sprintf("amqps://%s:%s@%s", c.AdminUsername, c.AdminPassword, endpoint), nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // HttpURL returns the URL for HTTP management.
 //
 //nolint:revive,staticcheck //FIXME
 func (c *RabbitMQContainer) HttpURL(ctx context.Context) (string, error) {
-	return c.PortEndpoint(ctx, DefaultHTTPPort, "http")
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // HttpsURL returns the URL for HTTPS management.
 //
 //nolint:revive,staticcheck //FIXME
 func (c *RabbitMQContainer) HttpsURL(ctx context.Context) (string, error) {
-	return c.PortEndpoint(ctx, DefaultHTTPSPort, "https")
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // Deprecated: use Run instead
 // RunContainer creates an instance of the RabbitMQ container type
 func RunContainer(ctx context.Context, opts ...testcontainers.ContainerCustomizer) (*RabbitMQContainer, error) {
-	return Run(ctx, "rabbitmq:3.12.11-management-alpine", opts...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Run creates an instance of the RabbitMQ container type
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*RabbitMQContainer, error) {
+	_ = "STUB: not implemented"
 	// Gather all config options (defaults and then apply provided options)
-	settings := defaultOptions()
-	for _, opt := range opts {
-		if apply, ok := opt.(Option); ok {
-			if err := apply(&settings); err != nil {
-				return nil, fmt.Errorf("apply option: %w", err)
-			}
-		}
-	}
-
-	nodeConfig, err := renderRabbitMQConfig(settings)
-	if err != nil {
-		return nil, err
-	}
-
-	tmpConfigFile := filepath.Join(os.TempDir(), "rabbitmq-testcontainers.conf")
-	err = os.WriteFile(tmpConfigFile, nodeConfig, 0o600)
-	if err != nil {
-		return nil, err
-	}
-
-	moduleOpts := []testcontainers.ContainerCustomizer{
-		testcontainers.WithEnv(map[string]string{
-			"RABBITMQ_DEFAULT_USER": settings.AdminUsername,
-			"RABBITMQ_DEFAULT_PASS": settings.AdminPassword,
-		}),
-		testcontainers.WithExposedPorts(
-			DefaultAMQPPort,
-			DefaultAMQPSPort,
-			DefaultHTTPSPort,
-			DefaultHTTPPort,
-		),
-		testcontainers.WithWaitStrategy(wait.ForLog(".*Server startup complete.*").AsRegexp().WithStartupTimeout(60 * time.Second)),
-		withConfig(tmpConfigFile),
-	}
-
-	if settings.SSLSettings != nil {
-		moduleOpts = append(moduleOpts, applySSLSettings(settings.SSLSettings))
-	}
-
-	moduleOpts = append(moduleOpts, opts...)
-
-	ctr, err := testcontainers.Run(ctx, img, moduleOpts...)
-	var c *RabbitMQContainer
-	if ctr != nil {
-		c = &RabbitMQContainer{
-			Container:     ctr,
-			AdminUsername: settings.AdminUsername,
-			AdminPassword: settings.AdminPassword,
-		}
-	}
-
-	if err != nil {
-		return c, fmt.Errorf("run rabbitmq: %w", err)
-	}
-
-	return c, nil
+	return nil, nil
 }
 
 func withConfig(hostPath string) testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		if err := testcontainers.WithEnv(map[string]string{"RABBITMQ_CONFIG_FILE": defaultCustomConfPath})(req); err != nil {
-			return err
-		}
-
-		return testcontainers.WithFiles(testcontainers.ContainerFile{
-			HostFilePath:      hostPath,
-			ContainerFilePath: defaultCustomConfPath,
-			FileMode:          0o644,
-		})(req)
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // applySSLSettings transfers the SSL settings to the container request.
 func applySSLSettings(sslSettings *SSLSettings) testcontainers.CustomizeRequestOption {
-	const rabbitCaCertPath = "/etc/rabbitmq/ca_cert.pem"
-	const rabbitCertPath = "/etc/rabbitmq/rabbitmq_cert.pem"
-	const rabbitKeyPath = "/etc/rabbitmq/rabbitmq_key.pem"
-
-	const defaultPermission = 0o644
-
-	return func(req *testcontainers.GenericContainerRequest) error {
-		if err := testcontainers.WithFiles(
-			testcontainers.ContainerFile{
-				HostFilePath:      sslSettings.CACertFile,
-				ContainerFilePath: rabbitCaCertPath,
-				FileMode:          defaultPermission,
-			},
-			testcontainers.ContainerFile{
-				HostFilePath:      sslSettings.CertFile,
-				ContainerFilePath: rabbitCertPath,
-				FileMode:          defaultPermission,
-			},
-			testcontainers.ContainerFile{
-				HostFilePath:      sslSettings.KeyFile,
-				ContainerFilePath: rabbitKeyPath,
-				FileMode:          defaultPermission,
-			},
-		)(req); err != nil {
-			return err
-		}
-
-		// To verify that TLS has been enabled on the node, container logs should contain an entry about a TLS listener being enabled
-		// See https://www.rabbitmq.com/ssl.html#enabling-tls-verify-configuration
-		return testcontainers.WithAdditionalWaitStrategy(wait.ForLog("started TLS (SSL) listener on [::]:5671"))(req)
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
-func renderRabbitMQConfig(opts options) ([]byte, error) {
-	rabbitCustomConfigTpl, err := template.New("rabbitmq-testcontainers.conf").Parse(customConfigTpl)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse RabbitMQ config file template: %w", err)
-	}
+// To verify that TLS has been enabled on the node, container logs should contain an entry about a TLS listener being enabled
+// See https://www.rabbitmq.com/ssl.html#enabling-tls-verify-configuration
 
-	var rabbitMQConfig bytes.Buffer
-	if err := rabbitCustomConfigTpl.Execute(&rabbitMQConfig, opts); err != nil {
-		return nil, fmt.Errorf("failed to render RabbitMQ config template: %w", err)
-	}
-
-	return rabbitMQConfig.Bytes(), nil
-}
+func renderRabbitMQConfig(opts options) ([]byte, error) { _ = "STUB: not implemented"; return nil, nil }

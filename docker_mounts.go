@@ -1,12 +1,7 @@
 package testcontainers
 
 import (
-	"errors"
-	"path/filepath"
-
 	"github.com/moby/moby/api/types/mount"
-
-	"github.com/testcontainers/testcontainers-go/log"
 )
 
 var mountTypeMapping = map[MountType]mount.Type{
@@ -53,17 +48,23 @@ type DockerBindMountSource struct {
 
 // Deprecated: use Files or HostConfigModifier in the ContainerRequest, or copy files container APIs to make containers portable across Docker environments
 func (s DockerBindMountSource) Source() string {
-	return s.HostPath
+	_ = "STUB: not implemented"
+
+	// Deprecated: use Files or HostConfigModifier in the ContainerRequest, or copy files container APIs to make containers portable across Docker environments
+	return ""
 }
 
-// Deprecated: use Files or HostConfigModifier in the ContainerRequest, or copy files container APIs to make containers portable across Docker environments
 func (DockerBindMountSource) Type() MountType {
-	return MountTypeBind
+	_ = "STUB: not implemented"
+	return *
+
+	// Deprecated: use Files or HostConfigModifier in the ContainerRequest, or copy files container APIs to make containers portable across Docker environments
+	new(MountType)
 }
 
-// Deprecated: use Files or HostConfigModifier in the ContainerRequest, or copy files container APIs to make containers portable across Docker environments
 func (s DockerBindMountSource) GetBindOptions() *mount.BindOptions {
-	return s.BindOptions
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type DockerVolumeMountSource struct {
@@ -74,16 +75,13 @@ type DockerVolumeMountSource struct {
 	Name string
 }
 
-func (s DockerVolumeMountSource) Source() string {
-	return s.Name
-}
+func (s DockerVolumeMountSource) Source() string { _ = "STUB: not implemented"; return "" }
 
-func (DockerVolumeMountSource) Type() MountType {
-	return MountTypeVolume
-}
+func (DockerVolumeMountSource) Type() MountType { _ = "STUB: not implemented"; return *new(MountType) }
 
 func (s DockerVolumeMountSource) GetVolumeOptions() *mount.VolumeOptions {
-	return s.VolumeOptions
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type DockerTmpfsMountSource struct {
@@ -92,10 +90,12 @@ type DockerTmpfsMountSource struct {
 }
 
 func (s DockerTmpfsMountSource) GetTmpfsOptions() *mount.TmpfsOptions {
-	return s.TmpfsOptions
+	_ = "STUB: not implemented"
+	return nil
+
+	// DockerImageMountSource is a mount source for an image
 }
 
-// DockerImageMountSource is a mount source for an image
 type DockerImageMountSource struct {
 	// imageName is the image name
 	imageName string
@@ -106,89 +106,43 @@ type DockerImageMountSource struct {
 
 // NewDockerImageMountSource creates a new DockerImageMountSource
 func NewDockerImageMountSource(imageName string, subpath string) DockerImageMountSource {
-	return DockerImageMountSource{
-		imageName: imageName,
-		subpath:   subpath,
-	}
+	_ = "STUB: not implemented"
+	return *new(DockerImageMountSource)
 }
 
 // Validate validates the source of the mount, ensuring that the subpath is a relative path
-func (s DockerImageMountSource) Validate() error {
-	if !filepath.IsLocal(s.subpath) {
-		return errors.New("image mount source must be a local path")
-	}
-	return nil
-}
+func (s DockerImageMountSource) Validate() error { _ = "STUB: not implemented"; return nil }
 
 // ImageOptions returns the image options for the image mount
 func (s DockerImageMountSource) ImageOptions() *mount.ImageOptions {
-	return &mount.ImageOptions{
-		Subpath: s.subpath,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Source returns the image name for the image mount
 func (s DockerImageMountSource) Source() string {
-	return s.imageName
+	_ = "STUB: not implemented"
+
+	// Type returns the mount type for the image mount
+	return ""
 }
 
-// Type returns the mount type for the image mount
 func (s DockerImageMountSource) Type() MountType {
-	return MountTypeImage
+	_ = "STUB: not implemented"
+	return *
+
+	// PrepareMounts maps the given []ContainerMount to the corresponding
+	// []mount.Mount for further processing
+	new(MountType)
 }
 
-// PrepareMounts maps the given []ContainerMount to the corresponding
-// []mount.Mount for further processing
-func (m ContainerMounts) PrepareMounts() []mount.Mount {
-	return mapToDockerMounts(m)
-}
+func (m ContainerMounts) PrepareMounts() []mount.Mount { _ = "STUB: not implemented"; return nil }
 
 // mapToDockerMounts maps the given []ContainerMount to the corresponding
 // []mount.Mount for further processing
 func mapToDockerMounts(containerMounts ContainerMounts) []mount.Mount {
-	mounts := make([]mount.Mount, 0, len(containerMounts))
-
-	for idx := range containerMounts {
-		m := containerMounts[idx]
-
-		var mountType mount.Type
-		if mt, ok := mountTypeMapping[m.Source.Type()]; ok {
-			mountType = mt
-		} else {
-			continue
-		}
-
-		containerMount := mount.Mount{
-			Type:     mountType,
-			Source:   m.Source.Source(),
-			ReadOnly: m.ReadOnly,
-			Target:   m.Target.Target(),
-		}
-
-		switch typedMounter := m.Source.(type) {
-		case VolumeMounter:
-			containerMount.VolumeOptions = typedMounter.GetVolumeOptions()
-		case TmpfsMounter:
-			containerMount.TmpfsOptions = typedMounter.GetTmpfsOptions()
-		case ImageMounter:
-			containerMount.ImageOptions = typedMounter.ImageOptions()
-		case BindMounter:
-			log.Printf("Mount type %s is not supported by Testcontainers for Go", m.Source.Type())
-		default:
-			// The provided source type has no custom options
-		}
-
-		if mountType == mount.TypeVolume {
-			if containerMount.VolumeOptions == nil {
-				containerMount.VolumeOptions = &mount.VolumeOptions{
-					Labels: make(map[string]string),
-				}
-			}
-			AddGenericLabels(containerMount.VolumeOptions.Labels)
-		}
-
-		mounts = append(mounts, containerMount)
-	}
-
-	return mounts
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// The provided source type has no custom options

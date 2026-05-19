@@ -15,12 +15,7 @@ type options struct {
 	SSLSettings   *SSLSettings
 }
 
-func defaultOptions() options {
-	return options{
-		AdminUsername: defaultUser,
-		AdminPassword: defaultPassword,
-	}
-}
+func defaultOptions() options { _ = "STUB: not implemented"; return *new(options) }
 
 type SSLSettings struct {
 	// Path to the CA certificate file
@@ -45,30 +40,16 @@ type Option func(*options) error
 
 // Customize is a NOOP. It's defined to satisfy the testcontainers.ContainerCustomizer interface.
 func (o Option) Customize(*testcontainers.GenericContainerRequest) error {
+	_ = "STUB: not implemented"
 	// NOOP to satisfy interface.
 	return nil
 }
 
 // WithAdminPassword sets the password for the default admin user
-func WithAdminPassword(password string) Option {
-	return func(o *options) error {
-		o.AdminPassword = password
-		return nil
-	}
-}
+func WithAdminPassword(password string) Option { _ = "STUB: not implemented"; return *new(Option) }
 
 // WithAdminUsername sets the default admin username
-func WithAdminUsername(username string) Option {
-	return func(o *options) error {
-		o.AdminUsername = username
-		return nil
-	}
-}
+func WithAdminUsername(username string) Option { _ = "STUB: not implemented"; return *new(Option) }
 
 // WithSSL enables SSL on the RabbitMQ container, configuring the Erlang config file with the provided settings.
-func WithSSL(settings SSLSettings) Option {
-	return func(o *options) error {
-		o.SSLSettings = &settings
-		return nil
-	}
-}
+func WithSSL(settings SSLSettings) Option { _ = "STUB: not implemented"; return *new(Option) }

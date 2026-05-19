@@ -3,11 +3,6 @@ package core
 import (
 	"context"
 	"errors"
-	"net/url"
-	"os"
-	"path/filepath"
-	"runtime"
-	"strconv"
 )
 
 var (
@@ -25,9 +20,7 @@ var (
 var baseRunDir = "/run"
 
 // IsWindows returns if the current OS is Windows. For that it checks the GOOS environment variable or the runtime.GOOS constant.
-func IsWindows() bool {
-	return os.Getenv("GOOS") == "windows" || runtime.GOOS == "windows"
-}
+func IsWindows() bool { _ = "STUB: not implemented"; return false }
 
 // rootlessDockerSocketPath returns if the path to the rootless Docker socket exists.
 // The rootless socket path is determined by the following order:
@@ -40,111 +33,30 @@ func IsWindows() bool {
 //
 // It should include the Docker socket schema (unix://) in the returned path.
 func rootlessDockerSocketPath(_ context.Context) (string, error) {
+	_ = "STUB: not implemented"
 	// adding a manner to test it on non-windows machines, setting the GOOS env var to windows
 	// This is needed because runtime.GOOS is a constant that returns the OS of the machine running the test
-	if IsWindows() {
-		return "", ErrRootlessDockerNotSupportedWindows
-	}
-
-	socketPathFns := []func() (string, error){
-		rootlessSocketPathFromEnv,
-		rootlessSocketPathFromHomeRunDir,
-		rootlessSocketPathFromHomeDesktopDir,
-		rootlessSocketPathFromRunDir,
-	}
-
-	var errs []error
-	for _, socketPathFn := range socketPathFns {
-		s, err := socketPathFn()
-		if err != nil {
-			if !isHostNotSet(err) {
-				errs = append(errs, err)
-			}
-			continue
-		}
-
-		return DockerSocketSchema + s, nil
-	}
-
-	if len(errs) > 0 {
-		return "", errors.Join(errs...)
-	}
-
-	return "", ErrRootlessDockerNotFound
+	return "", nil
 }
 
-func fileExists(f string) bool {
-	_, err := os.Stat(f)
-	return err == nil
-}
+func fileExists(f string) bool { _ = "STUB: not implemented"; return false }
 
-func parseURL(s string) (string, error) {
-	hostURL, err := url.Parse(s)
-	if err != nil {
-		return "", err
-	}
+func parseURL(s string) (string, error) { _ = "STUB: not implemented"; return "", nil }
 
-	switch hostURL.Scheme {
-	case "unix", "npipe":
-		return hostURL.Path, nil
-	case "tcp":
-		// return the original URL, as it is a valid TCP URL
-		return s, nil
-	default:
-		return "", ErrNoUnixSchema
-	}
-}
+// return the original URL, as it is a valid TCP URL
 
 // rootlessSocketPathFromEnv returns the path to the rootless Docker socket from the XDG_RUNTIME_DIR environment variable.
 // It should include the Docker socket schema (unix://) in the returned path.
-func rootlessSocketPathFromEnv() (string, error) {
-	xdgRuntimeDir, exists := os.LookupEnv("XDG_RUNTIME_DIR")
-	if exists {
-		f := filepath.Join(xdgRuntimeDir, "docker.sock")
-		if fileExists(f) {
-			return f, nil
-		}
-
-		return "", ErrRootlessDockerNotFoundXDGRuntimeDir
-	}
-
-	return "", ErrXDGRuntimeDirNotSet
-}
+func rootlessSocketPathFromEnv() (string, error) { _ = "STUB: not implemented"; return "", nil }
 
 // rootlessSocketPathFromHomeRunDir returns the path to the rootless Docker socket from the ~/.docker/run/docker.sock file.
-func rootlessSocketPathFromHomeRunDir() (string, error) {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
-	}
-
-	f := filepath.Join(home, ".docker", "run", "docker.sock")
-	if fileExists(f) {
-		return f, nil
-	}
-	return "", ErrRootlessDockerNotFoundHomeRunDir
-}
+func rootlessSocketPathFromHomeRunDir() (string, error) { _ = "STUB: not implemented"; return "", nil }
 
 // rootlessSocketPathFromHomeDesktopDir returns the path to the rootless Docker socket from the ~/.docker/desktop/docker.sock file.
 func rootlessSocketPathFromHomeDesktopDir() (string, error) {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
-	}
-
-	f := filepath.Join(home, ".docker", "desktop", "docker.sock")
-	if fileExists(f) {
-		return f, nil
-	}
-	return "", ErrRootlessDockerNotFoundHomeDesktopDir
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // rootlessSocketPathFromRunDir returns the path to the rootless Docker socket from the /run/user/<uid>/docker.sock file.
-func rootlessSocketPathFromRunDir() (string, error) {
-	uid := os.Getuid()
-	f := filepath.Join(baseRunDir, "user", strconv.Itoa(uid), "docker.sock")
-	if fileExists(f) {
-		return f, nil
-	}
-	return "", ErrRootlessDockerNotFoundRunDir
-}
+func rootlessSocketPathFromRunDir() (string, error) { _ = "STUB: not implemented"; return "", nil }

@@ -2,11 +2,8 @@ package wait
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"time"
-
-	tcexec "github.com/testcontainers/testcontainers-go/exec"
 )
 
 // Implement interface
@@ -27,98 +24,52 @@ type ExecStrategy struct {
 }
 
 // NewExecStrategy constructs an Exec strategy ...
-func NewExecStrategy(cmd []string) *ExecStrategy {
-	return &ExecStrategy{
-		cmd:             cmd,
-		ExitCodeMatcher: defaultExitCodeMatcher,
-		ResponseMatcher: func(_ io.Reader) bool { return true },
-		PollInterval:    defaultPollInterval(),
-	}
-}
+func NewExecStrategy(cmd []string) *ExecStrategy { _ = "STUB: not implemented"; return nil }
 
-func defaultExitCodeMatcher(exitCode int) bool {
-	return exitCode == 0
-}
+func defaultExitCodeMatcher(exitCode int) bool { _ = "STUB: not implemented"; return false }
 
 // WithStartupTimeout can be used to change the default startup timeout
 func (ws *ExecStrategy) WithStartupTimeout(startupTimeout time.Duration) *ExecStrategy {
-	ws.timeout = &startupTimeout
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (ws *ExecStrategy) WithExitCode(exitCode int) *ExecStrategy {
-	return ws.WithExitCodeMatcher(func(actualCode int) bool {
-		return actualCode == exitCode
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (ws *ExecStrategy) WithExitCodeMatcher(exitCodeMatcher func(exitCode int) bool) *ExecStrategy {
-	ws.ExitCodeMatcher = exitCodeMatcher
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (ws *ExecStrategy) WithResponseMatcher(matcher func(body io.Reader) bool) *ExecStrategy {
-	ws.ResponseMatcher = matcher
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // WithPollInterval can be used to override the default polling interval of 100 milliseconds
 func (ws *ExecStrategy) WithPollInterval(pollInterval time.Duration) *ExecStrategy {
-	ws.PollInterval = pollInterval
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // ForExec is a convenience method to assign ExecStrategy
-func ForExec(cmd []string) *ExecStrategy {
-	return NewExecStrategy(cmd)
-}
+func ForExec(cmd []string) *ExecStrategy { _ = "STUB: not implemented"; return nil }
 
 func (ws *ExecStrategy) Timeout() *time.Duration {
-	return ws.timeout
+	_ = "STUB: not implemented"
+
+	// String returns a human-readable description of the wait strategy.
+	return nil
 }
 
-// String returns a human-readable description of the wait strategy.
-func (ws *ExecStrategy) String() string {
-	if len(ws.cmd) == 0 {
-		return "exec command"
-	}
-	// Only show the command name and argument count to avoid exposing sensitive data
-	argCount := len(ws.cmd) - 1
-	if argCount == 0 {
-		return fmt.Sprintf("exec command %q", ws.cmd[0])
-	}
-	if argCount == 1 {
-		return fmt.Sprintf("exec command %q with 1 argument", ws.cmd[0])
-	}
-	return fmt.Sprintf("exec command %q with %d arguments", ws.cmd[0], argCount)
-}
+func (ws *ExecStrategy) String() string { _ = "STUB: not implemented"; return "" }
+
+// Only show the command name and argument count to avoid exposing sensitive data
 
 func (ws *ExecStrategy) WaitUntilReady(ctx context.Context, target StrategyTarget) error {
-	timeout := defaultStartupTimeout()
-	if ws.timeout != nil {
-		timeout = *ws.timeout
-	}
-
-	ctx, cancel := context.WithTimeout(ctx, timeout)
-	defer cancel()
-
-	for {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case <-time.After(ws.PollInterval):
-			exitCode, resp, err := target.Exec(ctx, ws.cmd, tcexec.Multiplexed())
-			if err != nil {
-				return err
-			}
-			if !ws.ExitCodeMatcher(exitCode) {
-				continue
-			}
-			if ws.ResponseMatcher != nil && !ws.ResponseMatcher(resp) {
-				continue
-			}
-
-			return nil
-		}
-	}
+	_ = "STUB: not implemented"
+	return nil
 }

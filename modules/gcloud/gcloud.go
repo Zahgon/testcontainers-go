@@ -2,8 +2,6 @@ package gcloud
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"io"
 
 	"github.com/testcontainers/testcontainers-go"
@@ -26,23 +24,8 @@ type GCloudContainer struct {
 
 // newGCloudContainer creates a new GCloud container, obtaining the URL to access the container from the specified port.
 func newGCloudContainer(ctx context.Context, img string, port int, settings options, proto string, opts ...testcontainers.ContainerCustomizer) (*GCloudContainer, error) {
-	container, err := testcontainers.Run(ctx, img, opts...)
-	var c *GCloudContainer
-	if container != nil {
-		c = &GCloudContainer{Container: container, Settings: settings}
-	}
-	if err != nil {
-		return c, fmt.Errorf("run gcloud container: %w", err)
-	}
-
-	endpoint, err := c.PortEndpoint(ctx, fmt.Sprintf("%d/tcp", port), proto)
-	if err != nil {
-		return c, fmt.Errorf("port endpoint: %w", err)
-	}
-
-	c.URI = endpoint
-
-	return c, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 type options struct {
@@ -50,11 +33,7 @@ type options struct {
 	bigQueryDataYaml io.Reader
 }
 
-func defaultOptions() options {
-	return options{
-		ProjectID: defaultProjectID,
-	}
-}
+func defaultOptions() options { _ = "STUB: not implemented"; return *new(options) }
 
 // Compiler check to ensure that Option implements the testcontainers.ContainerCustomizer interface.
 var _ testcontainers.ContainerCustomizer = (*Option)(nil)
@@ -64,17 +43,13 @@ type Option func(*options) error
 
 // Customize is a NOOP. It's defined to satisfy the testcontainers.ContainerCustomizer interface.
 func (o Option) Customize(*testcontainers.GenericContainerRequest) error {
+	_ = "STUB: not implemented"
 	// NOOP to satisfy interface.
 	return nil
 }
 
 // WithProjectID sets the project ID for the GCloud container.
-func WithProjectID(projectID string) Option {
-	return func(o *options) error {
-		o.ProjectID = projectID
-		return nil
-	}
-}
+func WithProjectID(projectID string) Option { _ = "STUB: not implemented"; return *new(Option) }
 
 // Deprecated: Use [bigquery.WithDataYAML] instead.
 // WithDataYAML seeds the BigQuery project for the GCloud container with an [io.Reader] representing
@@ -83,27 +58,10 @@ func WithProjectID(projectID string) Option {
 //
 // Other GCloud containers will ignore this option.
 // If this option is passed multiple times, an error is returned.
-func WithDataYAML(r io.Reader) Option {
-	return func(o *options) error {
-		if o.bigQueryDataYaml != nil {
-			return errors.New("data yaml already exists")
-		}
-
-		o.bigQueryDataYaml = r
-		return nil
-	}
-}
+func WithDataYAML(r io.Reader) Option { _ = "STUB: not implemented"; return *new(Option) }
 
 // applyOptions applies the options to the container request and returns the settings.
 func applyOptions(opts []testcontainers.ContainerCustomizer) (options, error) {
-	settings := defaultOptions()
-	for _, opt := range opts {
-		if apply, ok := opt.(Option); ok {
-			if err := apply(&settings); err != nil {
-				return options{}, fmt.Errorf("apply option: %w", err)
-			}
-		}
-	}
-
-	return settings, nil
+	_ = "STUB: not implemented"
+	return *new(options), nil
 }

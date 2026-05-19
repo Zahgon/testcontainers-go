@@ -2,14 +2,9 @@ package eventhubs
 
 import (
 	"context"
-	"errors"
-	"fmt"
-	"net/http"
 
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/azure/azurite"
-	"github.com/testcontainers/testcontainers-go/network"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const (
@@ -34,116 +29,40 @@ type Container struct {
 }
 
 // AzuriteContainer returns the azurite container that is used by the eventhubs container
-func (c *Container) AzuriteContainer() *azurite.Container {
-	return c.azuriteOptions.azuriteContainer
-}
+func (c *Container) AzuriteContainer() *azurite.Container { _ = "STUB: not implemented"; return nil }
 
 // Terminate terminates the eventhubs container, the azurite container, and the network to communicate between them.
 func (c *Container) Terminate(ctx context.Context, opts ...testcontainers.TerminateOption) error {
-	var errs []error
-
-	if c.Container != nil {
-		// terminate the eventhubs container
-		if err := c.Container.Terminate(ctx, opts...); err != nil {
-			errs = append(errs, fmt.Errorf("terminate eventhubs container: %w", err))
-		}
-	}
-
-	// terminate the azurite container if it was created
-	if c.azuriteOptions.azuriteContainer != nil {
-		if err := c.azuriteOptions.azuriteContainer.Terminate(ctx, opts...); err != nil {
-			errs = append(errs, fmt.Errorf("terminate azurite container: %w", err))
-		}
-	}
-
-	// remove the azurite network if it was created
-	if c.azuriteOptions.network != nil {
-		if err := c.azuriteOptions.network.Remove(ctx); err != nil {
-			errs = append(errs, fmt.Errorf("remove azurite network: %w", err))
-		}
-	}
-
-	return errors.Join(errs...)
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// terminate the eventhubs container
+
+// terminate the azurite container if it was created
+
+// remove the azurite network if it was created
 
 // Run creates an instance of the Azure Event Hubs container type
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*Container, error) {
+	_ = "STUB: not implemented"
 	// Process custom options first to extract settings
-	defaultOptions := defaultOptions()
-	for _, opt := range opts {
-		if o, ok := opt.(Option); ok {
-			if err := o(&defaultOptions); err != nil {
-				return nil, fmt.Errorf("eventhubs option: %w", err)
-			}
-		}
-	}
-
-	c := &Container{azuriteOptions: &defaultOptions}
-
-	// Build moduleOpts with defaults
-	moduleOpts := []testcontainers.ContainerCustomizer{
-		testcontainers.WithExposedPorts(defaultAMPQPort, defaultHTTPPort),
-		testcontainers.WithWaitStrategy(
-			wait.ForListeningPort(defaultAMPQPort),
-			wait.ForListeningPort(defaultHTTPPort),
-			wait.ForHTTP("/health").WithPort(defaultHTTPPort).WithStatusCodeMatcher(func(status int) bool {
-				return status == http.StatusOK
-			}),
-		),
-	}
-
-	if defaultOptions.azuriteContainer == nil {
-		azuriteNetwork, err := network.New(ctx)
-		if err != nil {
-			return c, fmt.Errorf("new azurite network: %w", err)
-		}
-		defaultOptions.network = azuriteNetwork
-
-		azuriteOpts := make([]testcontainers.ContainerCustomizer, 0, 1+len(defaultOptions.azuriteOptions))
-		azuriteOpts = append(azuriteOpts,
-			network.WithNetwork([]string{aliasAzurite}, azuriteNetwork),
-		)
-		azuriteOpts = append(azuriteOpts, defaultOptions.azuriteOptions...)
-
-		// start the azurite container first
-		azuriteContainer, err := azurite.Run(ctx, defaultOptions.azuriteImage, azuriteOpts...)
-		if err != nil {
-			return c, fmt.Errorf("run azurite container: %w", err)
-		}
-		defaultOptions.azuriteContainer = azuriteContainer
-
-		moduleOpts = append(moduleOpts, testcontainers.WithEnv(map[string]string{
-			"BLOB_SERVER":     aliasAzurite,
-			"METADATA_SERVER": aliasAzurite,
-		}))
-
-		// apply the network to the eventhubs container
-		moduleOpts = append(moduleOpts, network.WithNetwork([]string{aliasEventhubs}, azuriteNetwork))
-	}
-
-	moduleOpts = append(moduleOpts, opts...)
-
-	// validate the EULA after all the options are applied
-	moduleOpts = append(moduleOpts, validateEula())
-
-	var err error
-	c.Container, err = testcontainers.Run(ctx, img, moduleOpts...)
-	if err != nil {
-		return c, fmt.Errorf("run eventhubs: %w", err)
-	}
-
-	return c, nil
+	return nil, nil
 }
+
+// Build moduleOpts with defaults
+
+// start the azurite container first
+
+// apply the network to the eventhubs container
+
+// validate the EULA after all the options are applied
 
 // ConnectionString returns the connection string for the eventhubs container,
 // using the following format:
 // Endpoint=sb://<hostname>:<port>;SharedAccessKeyName=<key-name>;SharedAccessKey=<key>;UseDevelopmentEmulator=true;
 func (c *Container) ConnectionString(ctx context.Context) (string, error) {
+	_ = "STUB: not implemented"
 	// we are passing an empty proto to get the host:port string
-	hostPort, err := c.PortEndpoint(ctx, defaultAMPQPort, "")
-	if err != nil {
-		return "", fmt.Errorf("port endpoint: %w", err)
-	}
-
-	return fmt.Sprintf(connectionStringFormat, hostPort, azurite.AccountName, azurite.AccountKey), nil
+	return "", nil
 }

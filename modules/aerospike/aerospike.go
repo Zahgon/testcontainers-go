@@ -2,11 +2,8 @@ package aerospike
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const (
@@ -29,31 +26,6 @@ type Container struct {
 
 // Run creates an instance of the Aerospike container type
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*Container, error) {
-	moduleOpts := make([]testcontainers.ContainerCustomizer, 0, 3+len(opts))
-	moduleOpts = append(moduleOpts,
-		testcontainers.WithExposedPorts(port, fabricPort, heartbeatPort, infoPort),
-		testcontainers.WithEnv(map[string]string{
-			"AEROSPIKE_CONFIG_FILE": "/etc/aerospike/aerospike.conf",
-		}),
-		testcontainers.WithWaitStrategy(
-			wait.ForLog("migrations: complete"),
-			wait.ForListeningPort(port).WithStartupTimeout(10*time.Second),
-			wait.ForListeningPort(fabricPort).WithStartupTimeout(10*time.Second),
-			wait.ForListeningPort(heartbeatPort).WithStartupTimeout(10*time.Second),
-		),
-	)
-
-	moduleOpts = append(moduleOpts, opts...)
-
-	container, err := testcontainers.Run(ctx, img, moduleOpts...)
-	var c *Container
-	if container != nil {
-		c = &Container{Container: container}
-	}
-
-	if err != nil {
-		return c, fmt.Errorf("run aerospike: %w", err)
-	}
-
-	return c, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }

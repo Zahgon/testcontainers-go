@@ -1,9 +1,3 @@
 package wait
 
-import (
-	"golang.org/x/sys/windows"
-)
-
-func isConnRefusedErr(err error) bool {
-	return err == windows.WSAECONNREFUSED
-}
+func isConnRefusedErr(err error) bool { _ = "STUB: not implemented"; return false }

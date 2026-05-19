@@ -1,9 +1,6 @@
 package registry
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/testcontainers/testcontainers-go"
 )
 
@@ -19,18 +16,8 @@ const (
 // REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY environment variable.
 // The dataPath must have the same structure as the registry data directory.
 func WithData(dataPath string) testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		if err := testcontainers.WithFiles(testcontainers.ContainerFile{
-			HostFilePath:      dataPath,
-			ContainerFilePath: containerDataPath,
-		})(req); err != nil {
-			return err
-		}
-
-		return testcontainers.WithEnv(map[string]string{
-			"REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY": containerDataPath,
-		})(req)
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // WithHtpasswd is a custom option to set the htpasswd credentials for the registry
@@ -38,23 +25,8 @@ func WithData(dataPath string) testcontainers.CustomizeRequestOption {
 // in the /auth/htpasswd path. The container will be configured to use this file as
 // the htpasswd file, thanks to the REGISTRY_AUTH_HTPASSWD_PATH environment variable.
 func WithHtpasswd(credentials string) testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		tmpFile, err := os.CreateTemp("", "htpasswd")
-		if err != nil {
-			tmpFile, err = os.Create(".")
-			if err != nil {
-				return fmt.Errorf("cannot create the file in the temp dir or in the current dir: %w", err)
-			}
-		}
-		defer tmpFile.Close()
-
-		_, err = tmpFile.WriteString(credentials)
-		if err != nil {
-			return fmt.Errorf("cannot write the credentials to the file: %w", err)
-		}
-
-		return WithHtpasswdFile(tmpFile.Name())(req)
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // WithHtpasswdFile is a custom option to set the htpasswd file for the registry
@@ -62,19 +34,6 @@ func WithHtpasswd(credentials string) testcontainers.CustomizeRequestOption {
 // The container will be configured to use this file as the htpasswd file,
 // thanks to the REGISTRY_AUTH_HTPASSWD_PATH environment variable.
 func WithHtpasswdFile(htpasswdPath string) testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		if err := testcontainers.WithFiles(testcontainers.ContainerFile{
-			HostFilePath:      htpasswdPath,
-			ContainerFilePath: containerHtpasswdPath,
-			FileMode:          0o644,
-		})(req); err != nil {
-			return err
-		}
-
-		return testcontainers.WithEnv(map[string]string{
-			"REGISTRY_AUTH":                "htpasswd",
-			"REGISTRY_AUTH_HTPASSWD_REALM": "Registry",
-			"REGISTRY_AUTH_HTPASSWD_PATH":  containerHtpasswdPath,
-		})(req)
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }

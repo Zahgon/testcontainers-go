@@ -1,13 +1,8 @@
 package core
 
 import (
-	"bufio"
 	"io"
-	"net/url"
-	"os"
 	"regexp"
-	"strings"
-	"unicode/utf8"
 )
 
 const (
@@ -28,53 +23,21 @@ var rxURL = regexp.MustCompile(URL)
 
 // ExtractImagesFromDockerfile extracts images from the Dockerfile sourced from dockerfile.
 func ExtractImagesFromDockerfile(dockerfile string, buildArgs map[string]*string) ([]string, error) {
-	file, err := os.Open(dockerfile)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	return ExtractImagesFromReader(file, buildArgs)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ExtractImagesFromReader extracts images from the Dockerfile sourced from r.
 func ExtractImagesFromReader(r io.Reader, buildArgs map[string]*string) ([]string, error) {
-	var lines []string
-	scanner := bufio.NewScanner(r)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	if scanner.Err() != nil {
-		return nil, scanner.Err()
-	}
-
-	images := make([]string, 0, len(lines))
-
-	// extract images from dockerfile
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if !strings.HasPrefix(strings.ToUpper(line), "FROM") {
-			continue
-		}
-
-		// remove FROM
-		line = strings.TrimPrefix(line, "FROM")
-		parts := strings.Split(strings.TrimSpace(line), " ")
-		if len(parts) == 0 {
-			continue
-		}
-
-		// interpolate build args
-		for k, v := range buildArgs {
-			if v != nil {
-				parts[0] = strings.ReplaceAll(parts[0], "${"+k+"}", *v)
-			}
-		}
-		images = append(images, parts[0])
-	}
-
-	return images, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// extract images from dockerfile
+
+// remove FROM
+
+// interpolate build args
 
 // ExtractRegistry extracts the registry from the image name, using a regular expression to extract the registry from the image name.
 // regular expression to extract the registry from the image name
@@ -92,52 +55,15 @@ func ExtractImagesFromReader(r io.Reader, buildArgs map[string]*string) ([]strin
 // - registry:port/image:tag
 // - registry:port/image
 // Once extracted the registry, it is validated to check if it is a valid URL or an IP address.
-func ExtractRegistry(image string, fallback string) string {
-	exp := regexp.MustCompile(`^(?:(?P<registry>(https?://)?[^/]+)(?::(?P<port>\d+))?/)?(?:(?P<repository>[^/]+)/)?(?P<image>[^:]+)(?::(?P<tag>.+))?$`).FindStringSubmatch(image)
-	if len(exp) == 0 {
-		return ""
-	}
+func ExtractRegistry(image string, fallback string) string { _ = "STUB: not implemented"; return "" }
 
-	registry := exp[1]
+// docker.io is an implicit reference, return fallback for normalization
 
-	// docker.io is an implicit reference, return fallback for normalization
-	if strings.EqualFold(registry, "docker.io") {
-		return fallback
-	}
-
-	// registry.hub.docker.com is an explicit registry reference, preserve it
-	if strings.EqualFold(registry, "registry.hub.docker.com") {
-		return "registry.hub.docker.com"
-	}
-
-	if IsURL(registry) {
-		return registry
-	}
-
-	return fallback
-}
+// registry.hub.docker.com is an explicit registry reference, preserve it
 
 // IsURL checks if the string is a URL.
 // Extracted from https://github.com/asaskevich/govalidator/blob/f21760c49a8d/validator.go#L104
-func IsURL(str string) bool {
-	if str == "" || utf8.RuneCountInString(str) >= maxURLRuneCount || len(str) <= minURLRuneCount || strings.HasPrefix(str, ".") {
-		return false
-	}
-	strTemp := str
-	if strings.Contains(str, ":") && !strings.Contains(str, "://") {
-		// support no indicated urlscheme but with colon for port number
-		// http:// is appended so url.Parse will succeed, strTemp used so it does not impact rxURL.MatchString
-		strTemp = "http://" + str
-	}
-	u, err := url.Parse(strTemp)
-	if err != nil {
-		return false
-	}
-	if strings.HasPrefix(u.Host, ".") {
-		return false
-	}
-	if u.Host == "" && (u.Path != "" && !strings.Contains(u.Path, ".")) {
-		return false
-	}
-	return rxURL.MatchString(str)
-}
+func IsURL(str string) bool { _ = "STUB: not implemented"; return false }
+
+// support no indicated urlscheme but with colon for port number
+// http:// is appended so url.Parse will succeed, strTemp used so it does not impact rxURL.MatchString

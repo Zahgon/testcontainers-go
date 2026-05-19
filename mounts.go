@@ -2,7 +2,6 @@ package testcontainers
 
 import (
 	"errors"
-	"path/filepath"
 )
 
 const (
@@ -53,83 +52,88 @@ type GenericBindMountSource struct {
 
 // Deprecated: use Files or HostConfigModifier in the ContainerRequest, or copy files container APIs to make containers portable across Docker environments
 func (s GenericBindMountSource) Source() string {
-	return s.HostPath
+	_ = "STUB: not implemented"
+
+	// Deprecated: use Files or HostConfigModifier in the ContainerRequest, or copy files container APIs to make containers portable across Docker environments
+	return ""
 }
 
-// Deprecated: use Files or HostConfigModifier in the ContainerRequest, or copy files container APIs to make containers portable across Docker environments
 func (GenericBindMountSource) Type() MountType {
-	return MountTypeBind
+	_ = "STUB: not implemented"
+	return *
+
+	// GenericVolumeMountSource implements ContainerMountSource and represents a volume mount
+	new(MountType)
 }
 
-// GenericVolumeMountSource implements ContainerMountSource and represents a volume mount
 type GenericVolumeMountSource struct {
 	// Name refers to the name of the volume to be mounted
 	// the same volume might be mounted to multiple locations within a single container
 	Name string
 }
 
-func (s GenericVolumeMountSource) Source() string {
-	return s.Name
-}
+func (s GenericVolumeMountSource) Source() string { _ = "STUB: not implemented"; return "" }
 
 func (GenericVolumeMountSource) Type() MountType {
-	return MountTypeVolume
+	_ = "STUB: not implemented"
+	return *
+
+	// GenericTmpfsMountSource implements ContainerMountSource and represents a TmpFS mount
+	// Optionally mount.TmpfsOptions might be added for advanced scenarios
+	new(MountType)
 }
 
-// GenericTmpfsMountSource implements ContainerMountSource and represents a TmpFS mount
-// Optionally mount.TmpfsOptions might be added for advanced scenarios
 type GenericTmpfsMountSource struct{}
 
-func (s GenericTmpfsMountSource) Source() string {
-	return ""
-}
+func (s GenericTmpfsMountSource) Source() string { _ = "STUB: not implemented"; return "" }
 
 func (GenericTmpfsMountSource) Type() MountType {
-	return MountTypeTmpfs
+	_ = "STUB: not implemented"
+	return *
+
+	// ContainerMountTarget represents the target path within a container where the mount will be available
+	// Note that mount targets must be unique. It's not supported to mount different sources to the same target.
+	new(MountType)
 }
 
-// ContainerMountTarget represents the target path within a container where the mount will be available
-// Note that mount targets must be unique. It's not supported to mount different sources to the same target.
 type ContainerMountTarget string
 
 func (t ContainerMountTarget) Target() string {
-	return string(t)
+	_ = "STUB: not implemented"
+
+	// Deprecated: use Files or HostConfigModifier in the ContainerRequest, or copy files container APIs to make containers portable across Docker environments
+	// BindMount returns a new ContainerMount with a GenericBindMountSource as source
+	// This is a convenience method to cover typical use cases.
+	return ""
 }
 
-// Deprecated: use Files or HostConfigModifier in the ContainerRequest, or copy files container APIs to make containers portable across Docker environments
-// BindMount returns a new ContainerMount with a GenericBindMountSource as source
-// This is a convenience method to cover typical use cases.
 func BindMount(hostPath string, mountTarget ContainerMountTarget) ContainerMount {
-	return ContainerMount{
-		Source: GenericBindMountSource{HostPath: hostPath},
-		Target: mountTarget,
-	}
+	_ = "STUB: not implemented"
+	return *new(ContainerMount)
 }
 
 // VolumeMount returns a new ContainerMount with a GenericVolumeMountSource as source
 // This is a convenience method to cover typical use cases.
 func VolumeMount(volumeName string, mountTarget ContainerMountTarget) ContainerMount {
-	return ContainerMount{
-		Source: GenericVolumeMountSource{Name: volumeName},
-		Target: mountTarget,
-	}
+	_ = "STUB: not implemented"
+	return *new(ContainerMount)
 }
 
 // ImageMount returns a new ContainerMount with a GenericImageMountSource as source
 // This is a convenience method to cover typical use cases.
 func ImageMount(imageName string, subpath string, mountTarget ContainerMountTarget) ContainerMount {
-	return ContainerMount{
-		Source: NewGenericImageMountSource(imageName, subpath),
-		Target: mountTarget,
-	}
+	_ = "STUB: not implemented"
+	return *new(ContainerMount)
 }
 
 // Mounts returns a ContainerMounts to support a more fluent API
 func Mounts(mounts ...ContainerMount) ContainerMounts {
-	return mounts
+	_ = "STUB: not implemented"
+
+	// ContainerMount models a mount into a container
+	return *new(ContainerMounts)
 }
 
-// ContainerMount models a mount into a container
 type ContainerMount struct {
 	// Source is typically either a GenericVolumeMountSource, as BindMount is not supported by all Docker environments
 	Source ContainerMountSource
@@ -150,26 +154,24 @@ type GenericImageMountSource struct {
 
 // NewGenericImageMountSource creates a new GenericImageMountSource
 func NewGenericImageMountSource(imageName string, subpath string) GenericImageMountSource {
-	return GenericImageMountSource{
-		imageName: imageName,
-		subpath:   subpath,
-	}
+	_ = "STUB: not implemented"
+	return *new(GenericImageMountSource)
 }
 
 // Source returns the name of the image to be mounted
 func (s GenericImageMountSource) Source() string {
-	return s.imageName
+	_ = "STUB: not implemented"
+
+	// Type returns the type of the mount
+	return ""
 }
 
-// Type returns the type of the mount
 func (GenericImageMountSource) Type() MountType {
-	return MountTypeImage
+	_ = "STUB: not implemented"
+	return *
+
+	// Validate validates the source of the mount
+	new(MountType)
 }
 
-// Validate validates the source of the mount
-func (s GenericImageMountSource) Validate() error {
-	if !filepath.IsLocal(s.subpath) {
-		return errors.New("image mount source must be a local path")
-	}
-	return nil
-}
+func (s GenericImageMountSource) Validate() error { _ = "STUB: not implemented"; return nil }

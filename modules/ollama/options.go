@@ -1,11 +1,6 @@
 package ollama
 
 import (
-	"context"
-
-	"github.com/moby/moby/api/types/container"
-	"github.com/moby/moby/client"
-
 	"github.com/testcontainers/testcontainers-go"
 )
 
@@ -14,31 +9,11 @@ var noopCustomizeRequestOption = func(_ *testcontainers.GenericContainerRequest)
 // withGpu requests a GPU for the container, which could improve performance for some models.
 // This option will be automatically added to the Ollama container to check if the host supports nvidia.
 func withGpu() testcontainers.CustomizeRequestOption {
-	apiClient, err := testcontainers.NewDockerClientWithOpts(context.Background())
-	if err != nil {
-		return noopCustomizeRequestOption
-	}
-	defer func() { _ = apiClient.Close() }()
-
-	res, err := apiClient.Info(context.Background(), client.InfoOptions{})
-	if err != nil {
-		return noopCustomizeRequestOption
-	}
-
-	// if the Runtime does not support nvidia, we don't need to request a GPU
-	if _, ok := res.Info.Runtimes["nvidia"]; !ok {
-		return noopCustomizeRequestOption
-	}
-
-	return testcontainers.WithHostConfigModifier(func(hostConfig *container.HostConfig) {
-		hostConfig.DeviceRequests = []container.DeviceRequest{
-			{
-				Count:        -1,
-				Capabilities: [][]string{{"gpu"}},
-			},
-		}
-	})
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
+
+// if the Runtime does not support nvidia, we don't need to request a GPU
 
 // WithUseLocal starts a local Ollama process with the given environment in
 // format KEY=VALUE instead of a Docker container, which can be more performant
@@ -57,12 +32,4 @@ func withGpu() testcontainers.CustomizeRequestOption {
 // - [testcontainers.GenericContainerRequest.Logger] is unused
 //
 // Any other leaf field not set to the type's zero value will result in an error.
-func WithUseLocal(envKeyValues ...string) *localProcess {
-	sessionID := testcontainers.SessionID()
-	return &localProcess{
-		sessionID: sessionID,
-		logName:   localNamePrefix + "-" + sessionID + ".log",
-		env:       envKeyValues,
-		binary:    localBinary,
-	}
-}
+func WithUseLocal(envKeyValues ...string) *localProcess { _ = "STUB: not implemented"; return nil }

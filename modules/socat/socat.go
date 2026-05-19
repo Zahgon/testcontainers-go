@@ -2,11 +2,9 @@ package socat
 
 import (
 	"context"
-	"fmt"
 	"net/url"
 
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const (
@@ -27,74 +25,13 @@ type Container struct {
 
 // Run creates an instance of the Socat container type
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*Container, error) {
+	_ = "STUB: not implemented"
 	// Gather all config options (defaults and then apply provided options)
-	settings := defaultOptions()
-	for _, opt := range opts {
-		if apply, ok := opt.(Option); ok {
-			if err := apply(&settings); err != nil {
-				return nil, err
-			}
-		}
-	}
-
-	moduleOpts := []testcontainers.ContainerCustomizer{
-		testcontainers.WithEntrypoint("/bin/sh"),
-	}
-
-	exposedPorts := []string{}
-
-	for k := range settings.targets {
-		exposedPorts = append(exposedPorts, fmt.Sprintf("%d/tcp", k))
-	}
-	moduleOpts = append(moduleOpts, testcontainers.WithExposedPorts(exposedPorts...))
-
-	if settings.targetsCmd != "" {
-		moduleOpts = append(moduleOpts, testcontainers.WithCmdArgs("-c", settings.targetsCmd))
-	}
-
-	moduleOpts = append(moduleOpts, opts...)
-
-	container, err := testcontainers.Run(ctx, img, moduleOpts...)
-	var c *Container
-	if container != nil {
-		c = &Container{Container: container}
-	}
-
-	if err != nil {
-		return c, fmt.Errorf("run socat: %w", err)
-	}
-
-	// Only check if the socat binary is available if there are targets to expose.
-	// This is because the socat container exits otherwise.
-	if len(settings.targets) > 0 {
-		err = wait.ForExec([]string{"socat", "-V"}).WithExitCodeMatcher(func(exitCode int) bool {
-			return exitCode == 0
-		}).WaitUntilReady(ctx, c)
-		if err != nil {
-			return c, fmt.Errorf("wait for exec: %w", err)
-		}
-	}
-
-	targetURLs := map[int]*url.URL{}
-	for k := range settings.targets {
-		hostPort, err := c.PortEndpoint(ctx, fmt.Sprintf("%d/tcp", k), "http")
-		if err != nil {
-			return c, fmt.Errorf("mapped port: %w", err)
-		}
-
-		targetURL, err := url.Parse(hostPort)
-		if err != nil {
-			return c, fmt.Errorf("url parse: %w", err)
-		}
-		targetURLs[k] = targetURL
-	}
-
-	c.targetURLs = targetURLs
-
-	return c, nil
+	return nil, nil
 }
+
+// Only check if the socat binary is available if there are targets to expose.
+// This is because the socat container exits otherwise.
 
 // TargetURL returns the URL for the exposed port of a target, nil if the port is not mapped
-func (c *Container) TargetURL(exposedPort int) *url.URL {
-	return c.targetURLs[exposedPort]
-}
+func (c *Container) TargetURL(exposedPort int) *url.URL { _ = "STUB: not implemented"; return nil }

@@ -1,14 +1,8 @@
 package config
 
 import (
-	"fmt"
-	"os"
-	"path/filepath"
-	"strconv"
 	"sync"
 	"time"
-
-	"github.com/magiconair/properties"
 )
 
 const ReaperDefaultImage = "testcontainers/ryuk:0.13.0"
@@ -91,95 +85,23 @@ type Config struct {
 
 // Read reads from testcontainers properties file, if it exists
 // it is possible that certain values get overridden when set as environment variables
-func Read() Config {
-	tcConfigOnce.Do(func() {
-		tcConfig = read()
-	})
-
-	return tcConfig
-}
+func Read() Config { _ = "STUB: not implemented"; return *new(Config) }
 
 // Reset resets the singleton instance of the Config struct,
 // allowing to read the configuration again.
 // Handy for testing, so do not use it in production code
 // This function is not thread-safe
-func Reset() {
-	tcConfigOnce = new(sync.Once)
-}
+func Reset() { _ = "STUB: not implemented"; return }
 
-func read() Config {
-	config := Config{}
+func read() Config { _ = "STUB: not implemented"; return *new(Config) }
 
-	applyEnvironmentConfiguration := func(config Config) Config {
-		ryukDisabledEnv := os.Getenv("TESTCONTAINERS_RYUK_DISABLED")
-		if parseBool(ryukDisabledEnv) {
-			config.RyukDisabled = ryukDisabledEnv == "true"
-		}
+// init from a file
 
-		hubImageNamePrefix := os.Getenv("TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX")
-		if hubImageNamePrefix != "" {
-			config.HubImageNamePrefix = hubImageNamePrefix
-		}
-
-		ryukPrivilegedEnv := os.Getenv("TESTCONTAINERS_RYUK_CONTAINER_PRIVILEGED")
-		if parseBool(ryukPrivilegedEnv) {
-			config.RyukPrivileged = ryukPrivilegedEnv == "true"
-		}
-
-		ryukVerboseEnv := readTestcontainersEnv("RYUK_VERBOSE")
-		if parseBool(ryukVerboseEnv) {
-			config.RyukVerbose = ryukVerboseEnv == "true"
-		}
-
-		ryukReconnectionTimeoutEnv := readTestcontainersEnv("RYUK_RECONNECTION_TIMEOUT")
-		if timeout, err := time.ParseDuration(ryukReconnectionTimeoutEnv); err == nil {
-			config.RyukReconnectionTimeout = timeout
-		}
-
-		ryukConnectionTimeoutEnv := readTestcontainersEnv("RYUK_CONNECTION_TIMEOUT")
-		if timeout, err := time.ParseDuration(ryukConnectionTimeoutEnv); err == nil {
-			config.RyukConnectionTimeout = timeout
-		}
-
-		return config
-	}
-
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return applyEnvironmentConfiguration(config)
-	}
-
-	tcProp := filepath.Join(home, ".testcontainers.properties")
-	// init from a file
-	properties, err := properties.LoadFile(tcProp, properties.UTF8)
-	if err != nil {
-		return applyEnvironmentConfiguration(config)
-	}
-
-	if err := properties.Decode(&config); err != nil {
-		fmt.Printf("invalid testcontainers properties file, returning an empty Testcontainers configuration: %v\n", err)
-		return applyEnvironmentConfiguration(config)
-	}
-
-	return applyEnvironmentConfiguration(config)
-}
-
-func parseBool(input string) bool {
-	_, err := strconv.ParseBool(input)
-	return err == nil
-}
+func parseBool(input string) bool { _ = "STUB: not implemented"; return false }
 
 // readTestcontainersEnv reads the environment variable with the given name.
 // It checks for the environment variable with the given name first, and then
 // checks for the environment variable with the given name prefixed with "TESTCONTAINERS_".
-func readTestcontainersEnv(envVar string) string {
-	value := os.Getenv(envVar)
-	if value != "" {
-		return value
-	}
+func readTestcontainersEnv(envVar string) string { _ = "STUB: not implemented"; return "" }
 
-	// TODO: remove this prefix after the next major release
-	const prefix string = "TESTCONTAINERS_"
-
-	return os.Getenv(prefix + envVar)
-}
+// TODO: remove this prefix after the next major release

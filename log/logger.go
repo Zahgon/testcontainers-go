@@ -36,38 +36,34 @@ func init() {
 
 // Default returns the default Logger instance.
 func Default() Logger {
-	return defaultLogger
+	_ = "STUB: not implemented"
+	return *
+
+	// SetDefault sets the default Logger instance.
+	new(Logger)
 }
 
-// SetDefault sets the default Logger instance.
-func SetDefault(logger Logger) {
-	defaultLogger = logger
-}
+func SetDefault(logger Logger) { _ = "STUB: not implemented"; return }
 
-func Printf(format string, v ...any) {
-	defaultLogger.Printf(format, v...)
-}
+func Printf(format string, v ...any) { _ = "STUB: not implemented"; return }
 
 type noopLogger struct{}
 
 // Printf implements Logging.
 func (n noopLogger) Printf(_ string, _ ...any) {
+	_ = "STUB: not implemented"
 	// NOOP
+
+	// TestLogger returns a Logging implementation for testing.TB
+	// This way logs from testcontainers are part of the test output of a test suite or test case.
+	return
 }
 
-// TestLogger returns a Logging implementation for testing.TB
-// This way logs from testcontainers are part of the test output of a test suite or test case.
-func TestLogger(tb testing.TB) Logger {
-	tb.Helper()
-	return testLogger{TB: tb}
-}
+func TestLogger(tb testing.TB) Logger { _ = "STUB: not implemented"; return *new(Logger) }
 
 type testLogger struct {
 	testing.TB
 }
 
 // Printf implements Logging.
-func (t testLogger) Printf(format string, v ...any) {
-	t.Helper()
-	t.Logf(format, v...)
-}
+func (t testLogger) Printf(format string, v ...any) { _ = "STUB: not implemented"; return }

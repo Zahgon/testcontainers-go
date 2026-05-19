@@ -6,13 +6,8 @@ import (
 	"crypto/tls"
 	_ "embed"
 	"errors"
-	"fmt"
-	"net"
-	"net/url"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/stdlib"
-	"github.com/moby/moby/api/types/network"
 
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
@@ -65,9 +60,7 @@ type defaultsReader struct {
 }
 
 // newDefaultsReader creates a new reader for the default cluster settings script.
-func newDefaultsReader(data []byte) *defaultsReader {
-	return &defaultsReader{Reader: bytes.NewReader(data)}
-}
+func newDefaultsReader(data []byte) *defaultsReader { _ = "STUB: not implemented"; return nil }
 
 // CockroachDBContainer represents the CockroachDB container type used in the module
 type CockroachDBContainer struct {
@@ -87,11 +80,8 @@ type options struct {
 // as described by [CockroachDBContainer.ConnectionString].
 // It panics if an error occurs.
 func (c *CockroachDBContainer) MustConnectionString(ctx context.Context) string {
-	addr, err := c.ConnectionString(ctx)
-	if err != nil {
-		panic(err)
-	}
-	return addr
+	_ = "STUB: not implemented"
+	return ""
 }
 
 // ConnectionString returns a connection string to open a new connection to CockroachDB.
@@ -99,28 +89,15 @@ func (c *CockroachDBContainer) MustConnectionString(ctx context.Context) string 
 // [pgx.ParseConfig], so if you want to call [pgx.ConnectConfig] use the
 // [CockroachDBContainer.ConnectionConfig] method instead.
 func (c *CockroachDBContainer) ConnectionString(ctx context.Context) (string, error) {
-	cfg, err := c.ConnectionConfig(ctx)
-	if err != nil {
-		return "", fmt.Errorf("connection config: %w", err)
-	}
-
-	return stdlib.RegisterConnConfig(cfg), nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // ConnectionConfig returns a [pgx.ConnConfig] for the CockroachDB container.
 // This can be passed to [pgx.ConnectConfig] to open a new connection.
 func (c *CockroachDBContainer) ConnectionConfig(ctx context.Context) (*pgx.ConnConfig, error) {
-	port, err := c.MappedPort(ctx, defaultSQLPort)
-	if err != nil {
-		return nil, fmt.Errorf("mapped port: %w", err)
-	}
-
-	host, err := c.Host(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("host: %w", err)
-	}
-
-	return c.connConfig(host, port.String())
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // TLSConfig returns config necessary to connect to CockroachDB over TLS.
@@ -129,17 +106,15 @@ func (c *CockroachDBContainer) ConnectionConfig(ctx context.Context) (*pgx.ConnC
 // Deprecated: use [CockroachDBContainer.ConnectionString] or
 // [CockroachDBContainer.ConnectionConfig] instead.
 func (c *CockroachDBContainer) TLSConfig() (*tls.Config, error) {
-	if cfg := c.tlsStrategy.TLSConfig(); cfg != nil {
-		return cfg, nil
-	}
-
-	return nil, ErrTLSNotEnabled
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Deprecated: use Run instead.
 // RunContainer creates an instance of the CockroachDB container type
 func RunContainer(ctx context.Context, opts ...testcontainers.ContainerCustomizer) (*CockroachDBContainer, error) {
-	return Run(ctx, "cockroachdb/cockroach:latest-v23.1", opts...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Run start an instance of the CockroachDB container type using the given image and options.
@@ -167,114 +142,21 @@ func RunContainer(ctx context.Context, opts ...testcontainers.ContainerCustomize
 // [local cluster in docker]: https://www.cockroachlabs.com/docs/stable/start-a-local-cluster-in-docker-linux
 // [local testing clusters]: https://www.cockroachlabs.com/docs/stable/local-testing
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*CockroachDBContainer, error) {
-	ctr := &CockroachDBContainer{
-		options: options{
-			database: defaultDatabase,
-			user:     defaultUser,
-			password: defaultPassword,
-		},
-	}
-
-	moduleOpts := make([]testcontainers.ContainerCustomizer, 0, 5+len(opts)+1)
-	moduleOpts = append(moduleOpts,
-		testcontainers.WithCmd(
-			"start-single-node",
-			memStorageFlag+defaultStoreSize,
-		),
-		testcontainers.WithExposedPorts(defaultSQLPort, defaultAdminPort),
-		testcontainers.WithEnv(map[string]string{
-			"COCKROACH_DATABASE": defaultDatabase,
-			"COCKROACH_USER":     defaultUser,
-			"COCKROACH_PASSWORD": defaultPassword,
-		}),
-		testcontainers.WithFiles(testcontainers.ContainerFile{
-			Reader:            newDefaultsReader(clusterDefaults),
-			ContainerFilePath: clusterDefaultsContainerFile,
-			FileMode:          0o644,
-		}),
-		testcontainers.WithWaitStrategy(
-			wait.ForFile(cockroachDir+"/init_success"),
-			wait.ForHTTP("/health").WithPort(defaultAdminPort),
-			wait.ForTLSCert(
-				certsDir+"/client."+defaultUser+".crt",
-				certsDir+"/client."+defaultUser+".key",
-			).WithRootCAs(fileCACert).WithServerName("127.0.0.1"),
-			wait.ForSQL(defaultSQLPort, "pgx/v5", func(host string, port string) string {
-				connStr, err := ctr.connString(host, port)
-				if err != nil {
-					panic(err)
-				}
-				return connStr
-			}),
-		),
-	)
-
-	moduleOpts = append(moduleOpts, opts...)
-
-	// configure the wait strategy after all the options have been applied
-	// It extracts the TLS strategy from the wait strategy and sets it on the container.
-	moduleOpts = append(moduleOpts, ctr.configure())
-
-	var err error
-	ctr.Container, err = testcontainers.Run(ctx, img, moduleOpts...)
-	if err != nil {
-		return ctr, fmt.Errorf("run cockroachdb: %w", err)
-	}
-
-	return ctr, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// configure the wait strategy after all the options have been applied
+// It extracts the TLS strategy from the wait strategy and sets it on the container.
 
 // connString returns a connection string for the given host, port and options.
 func (c *CockroachDBContainer) connString(host string, port string) (string, error) {
-	cfg, err := c.connConfig(host, port)
-	if err != nil {
-		return "", fmt.Errorf("connection config: %w", err)
-	}
-
-	return stdlib.RegisterConnConfig(cfg), nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // connConfig returns a [pgx.ConnConfig] for the given host, port and options.
 func (c *CockroachDBContainer) connConfig(host string, port string) (*pgx.ConnConfig, error) {
-	p, err := network.ParsePort(port)
-	if err != nil {
-		return nil, err
-	}
-	var user *url.Userinfo
-	if c.password != "" {
-		user = url.UserPassword(c.user, c.password)
-	} else {
-		user = url.User(c.user)
-	}
-
-	sslMode := "disable"
-
-	var tlsConfig *tls.Config
-	if c.tlsStrategy != nil {
-		tlsConfig = c.tlsStrategy.TLSConfig()
-	}
-
-	if tlsConfig != nil {
-		sslMode = "verify-full"
-	}
-	params := url.Values{
-		"sslmode": []string{sslMode},
-	}
-
-	u := url.URL{
-		Scheme:   "postgres",
-		User:     user,
-		Host:     net.JoinHostPort(host, p.Port()),
-		Path:     c.database,
-		RawQuery: params.Encode(),
-	}
-
-	cfg, err := pgx.ParseConfig(u.String())
-	if err != nil {
-		return nil, fmt.Errorf("parse config: %w", err)
-	}
-
-	cfg.TLSConfig = tlsConfig
-
-	return cfg, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }

@@ -1,9 +1,6 @@
 package socat
 
 import (
-	"errors"
-	"fmt"
-
 	"github.com/testcontainers/testcontainers-go"
 )
 
@@ -13,11 +10,7 @@ type options struct {
 	targetsCmd string
 }
 
-func defaultOptions() options {
-	return options{
-		targets: map[int]Target{},
-	}
-}
+func defaultOptions() options { _ = "STUB: not implemented"; return *new(options) }
 
 // Compiler check to ensure that Option implements the testcontainers.ContainerCustomizer interface.
 var _ testcontainers.ContainerCustomizer = (Option)(nil)
@@ -27,6 +20,7 @@ type Option func(*options) error
 
 // Customize is a NOOP. It's defined to satisfy the testcontainers.ContainerCustomizer interface.
 func (o Option) Customize(*testcontainers.GenericContainerRequest) error {
+	_ = "STUB: not implemented"
 	// NOOP to satisfy interface.
 	return nil
 }
@@ -40,21 +34,15 @@ type Target struct {
 }
 
 // ExposedPort returns the exposed port of the target.
-func (t Target) ExposedPort() int {
-	return t.exposedPort
-}
+func (t Target) ExposedPort() int { _ = "STUB: not implemented"; return 0 }
 
-func (t Target) toCmd() string {
-	return fmt.Sprintf("socat TCP-LISTEN:%d,fork,reuseaddr TCP:%s:%d", t.exposedPort, t.host, t.internalPort)
-}
+func (t Target) toCmd() string { _ = "STUB: not implemented"; return "" }
 
 // NewTarget creates a new target for the socat container.
 // The host of the target must be without the port,
 // as it is internally mapped to the exposed port.
 // The exposed port is exposed by the socat container.
-func NewTarget(exposedPort int, host string) Target {
-	return NewTargetWithInternalPort(exposedPort, exposedPort, host)
-}
+func NewTarget(exposedPort int, host string) Target { _ = "STUB: not implemented"; return *new(Target) }
 
 // NewTargetWithInternalPort creates a new target for the socat container.
 // The host of the target must be without the port,
@@ -62,37 +50,12 @@ func NewTarget(exposedPort int, host string) Target {
 // The exposed port is the port of the socat container, and
 // the internal port is the port of the target container.
 func NewTargetWithInternalPort(exposedPort int, internalPort int, host string) Target {
+	_ = "STUB: not implemented"
 	// If the internal port is not set, use the exposed port
-	if internalPort == 0 {
-		internalPort = exposedPort
-	}
-
-	return Target{
-		exposedPort:  exposedPort,
-		internalPort: internalPort,
-		host:         host,
-	}
+	return *new(Target)
 }
 
 // WithTarget sets a single target for the socat container.
 // The host of the target must be without the port, as it is internally mapped to the exposed port.
 // Multiple calls to WithTarget will accumulate targets.
-func WithTarget(target Target) Option {
-	return func(o *options) error {
-		if target.exposedPort == 0 {
-			return errors.New("exposed port cannot be 0")
-		}
-
-		o.targets[target.exposedPort] = target
-
-		newCmd := target.toCmd()
-
-		if o.targetsCmd == "" {
-			o.targetsCmd = newCmd
-		} else {
-			o.targetsCmd += " & " + newCmd
-		}
-
-		return nil
-	}
-}
+func WithTarget(target Target) Option { _ = "STUB: not implemented"; return *new(Option) }

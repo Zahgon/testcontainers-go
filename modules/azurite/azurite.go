@@ -38,11 +38,13 @@ type AzuriteContainer = azurite.Container
 // Deprecated: This function is deprecated in favor of the one in "modules/azure/azurite".
 // RunContainer creates an instance of the Azurite container type
 func RunContainer(ctx context.Context, opts ...testcontainers.ContainerCustomizer) (*AzuriteContainer, error) {
-	return Run(ctx, "mcr.microsoft.com/azure-storage/azurite:3.28.0", opts...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Deprecated: This function is deprecated in favor of the one in "modules/azure/azurite".
 // Run creates an instance of the Azurite container type
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*AzuriteContainer, error) {
-	return azurite.Run(ctx, img, opts...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }

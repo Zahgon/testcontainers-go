@@ -1,10 +1,5 @@
 package mkdocs
 
-import (
-	"slices"
-	"strings"
-)
-
 type Config struct {
 	SiteName string   `yaml:"site_name"`
 	SiteURL  string   `yaml:"site_url"`
@@ -46,35 +41,12 @@ type Config struct {
 }
 
 func (c *Config) addModule(isModule bool, moduleMd string, indexMd string) {
-	mkdocsNavItems := c.Nav[4].Examples
-	if isModule {
-		mkdocsNavItems = c.Nav[3].Modules
-	}
-
-	if !slices.Contains(mkdocsNavItems, moduleMd) {
-
-		// make sure the index.md is the first element in the list of examples in the nav
-		navItems := make([]string, len(mkdocsNavItems)-1)
-		j := 0
-
-		for _, navItem := range mkdocsNavItems {
-			// filter out the index.md file
-			if !strings.HasSuffix(navItem, "index.md") {
-				navItems[j] = navItem
-				j++
-			}
-		}
-
-		navItems = append(navItems, moduleMd)
-		slices.Sort(navItems)
-
-		// prepend the index.md file
-		navItems = append([]string{indexMd}, navItems...)
-
-		if isModule {
-			c.Nav[3].Modules = navItems
-		} else {
-			c.Nav[4].Examples = navItems
-		}
-	}
+	_ = "STUB: not implemented"
+	return
 }
+
+// make sure the index.md is the first element in the list of examples in the nav
+
+// filter out the index.md file
+
+// prepend the index.md file

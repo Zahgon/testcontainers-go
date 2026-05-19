@@ -2,11 +2,8 @@ package bigquery
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const (
@@ -29,57 +26,14 @@ type Container struct {
 }
 
 // ProjectID returns the project ID of the BigQuery container.
-func (c *Container) ProjectID() string {
-	return c.settings.ProjectID
-}
+func (c *Container) ProjectID() string { _ = "STUB: not implemented"; return "" }
 
 // URI returns the URI of the BigQuery container.
-func (c *Container) URI() string {
-	return c.settings.URI
-}
+func (c *Container) URI() string { _ = "STUB: not implemented"; return "" }
 
 // Run creates an instance of the BigQuery GCloud container type.
 // The URI uses http:// as the protocol.
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*Container, error) {
-	moduleOpts := make([]testcontainers.ContainerCustomizer, 0, 3+len(opts))
-	moduleOpts = append(moduleOpts,
-		testcontainers.WithExposedPorts(defaultPort9050, defaultPort9060),
-		testcontainers.WithWaitStrategy(
-			wait.ForListeningPort(defaultPort9050),
-			wait.ForHTTP("/discovery/v1/apis/bigquery/v2/rest").WithPort(defaultPort9050).WithStatusCodeMatcher(func(status int) bool {
-				return status == 200
-			}).WithStartupTimeout(time.Second*5),
-		),
-	)
-
-	settings := defaultOptions()
-	for _, opt := range opts {
-		if apply, ok := opt.(Option); ok {
-			if err := apply(&settings); err != nil {
-				return nil, fmt.Errorf("apply option: %w", err)
-			}
-		}
-	}
-
-	moduleOpts = append(moduleOpts, testcontainers.WithCmdArgs("--project", settings.ProjectID))
-
-	moduleOpts = append(moduleOpts, opts...)
-
-	ctr, err := testcontainers.Run(ctx, img, moduleOpts...)
-	var c *Container
-	if ctr != nil {
-		c = &Container{Container: ctr, settings: settings}
-	}
-	if err != nil {
-		return c, fmt.Errorf("run bigquery: %w", err)
-	}
-
-	portEndpoint, err := c.PortEndpoint(ctx, defaultPort9050, "http")
-	if err != nil {
-		return c, fmt.Errorf("port endpoint: %w", err)
-	}
-
-	c.settings.URI = portEndpoint
-
-	return c, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }

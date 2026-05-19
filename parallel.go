@@ -2,7 +2,6 @@ package testcontainers
 
 import (
 	"context"
-	"fmt"
 	"sync"
 )
 
@@ -27,9 +26,7 @@ type ParallelContainersError struct {
 	Errors []ParallelContainersRequestError
 }
 
-func (gpe ParallelContainersError) Error() string {
-	return fmt.Sprintf("%v", gpe.Errors)
-}
+func (gpe ParallelContainersError) Error() string { _ = "STUB: not implemented"; return "" }
 
 // parallelContainersResult represents result.
 type parallelContainersResult struct {
@@ -43,65 +40,14 @@ func parallelContainersRunner(
 	results chan<- parallelContainersResult,
 	wg *sync.WaitGroup,
 ) {
-	defer wg.Done()
-	for req := range requests {
-		c, err := GenericContainer(ctx, req)
-		res := parallelContainersResult{Container: c}
-		if err != nil {
-			res.Request = req
-			res.Error = err
-		}
-		results <- res
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 // ParallelContainers creates a generic containers with parameters and run it in parallel mode
 func ParallelContainers(ctx context.Context, reqs ParallelContainerRequest, opt ParallelContainersOptions) ([]Container, error) {
-	if opt.WorkersCount == 0 {
-		opt.WorkersCount = defaultWorkersCount
-	}
-
-	tasksChanSize := min(opt.WorkersCount, len(reqs))
-
-	tasksChan := make(chan GenericContainerRequest, tasksChanSize)
-	resultsChan := make(chan parallelContainersResult, tasksChanSize)
-	done := make(chan struct{})
-
-	var wg sync.WaitGroup
-	wg.Add(tasksChanSize)
-
-	// run workers
-	for range tasksChanSize {
-		go parallelContainersRunner(ctx, tasksChan, resultsChan, &wg)
-	}
-
-	var errs []ParallelContainersRequestError
-	containers := make([]Container, 0, len(reqs))
-	go func() {
-		defer close(done)
-		for res := range resultsChan {
-			if res.Error != nil {
-				errs = append(errs, res.ParallelContainersRequestError)
-			} else {
-				containers = append(containers, res.Container)
-			}
-		}
-	}()
-
-	for _, req := range reqs {
-		tasksChan <- req
-	}
-	close(tasksChan)
-
-	wg.Wait()
-
-	close(resultsChan)
-
-	<-done
-
-	if len(errs) != 0 {
-		return containers, ParallelContainersError{Errors: errs}
-	}
-
-	return containers, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// run workers

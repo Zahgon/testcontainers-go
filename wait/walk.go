@@ -2,7 +2,6 @@ package wait
 
 import (
 	"errors"
-	"slices"
 )
 
 var (
@@ -27,55 +26,15 @@ var (
 type VisitFunc func(root Strategy) error
 
 // Walk walks the strategies tree and calls the visit function for each node.
-func Walk(root *Strategy, visit VisitFunc) error {
-	if root == nil {
-		return errors.New("root strategy is nil")
-	}
-
-	if err := walk(root, visit); err != nil {
-		if errors.Is(err, ErrVisitRemove) || errors.Is(err, ErrVisitStop) {
-			return nil
-		}
-		return err
-	}
-
-	return nil
-}
+func Walk(root *Strategy, visit VisitFunc) error { _ = "STUB: not implemented"; return nil }
 
 // walk walks the strategies tree and calls the visit function for each node.
 // It returns an error if the visit function returns an error.
 func walk(root *Strategy, visit VisitFunc) error {
-	if *root == nil {
-		// No strategy.
-		return nil
-	}
+	_ = "STUB: not implemented"
 
-	// Allow the visit function to customize the behaviour of the walk before visiting the children.
-	if err := visit(*root); err != nil {
-		if errors.Is(err, ErrVisitRemove) {
-			*root = nil
-		}
-
-		return err
-	}
-
-	if s, ok := (*root).(*MultiStrategy); ok {
-		var i int
-		for range s.Strategies {
-			if err := walk(&s.Strategies[i], visit); err != nil {
-				if errors.Is(err, ErrVisitRemove) {
-					s.Strategies = slices.Delete(s.Strategies, i, i+1)
-					if errors.Is(err, VisitStop) {
-						return VisitStop
-					}
-					continue
-				}
-
-				return err
-			}
-			i++
-		}
-	}
-
+	// No strategy.
 	return nil
 }
+
+// Allow the visit function to customize the behaviour of the walk before visiting the children.

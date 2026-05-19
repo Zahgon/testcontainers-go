@@ -10,14 +10,7 @@ type Client struct {
 }
 
 // NewClient creates a new client for the Docker Model Runner
-func NewClient(baseURL string) *Client {
-	return &Client{
-		baseURL:        baseURL,
-		openAIEndpoint: baseURL + openAIEndpointSuffix,
-	}
-}
+func NewClient(baseURL string) *Client { _ = "STUB: not implemented"; return nil }
 
 // OpenAIEndpoint returns the OpenAI endpoint for the Docker Model Runner
-func (c *Client) OpenAIEndpoint() string {
-	return c.openAIEndpoint
-}
+func (c *Client) OpenAIEndpoint() string { _ = "STUB: not implemented"; return "" }

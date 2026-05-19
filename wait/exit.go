@@ -2,7 +2,6 @@ package wait
 
 import (
 	"context"
-	"strings"
 	"time"
 )
 
@@ -22,11 +21,7 @@ type ExitStrategy struct {
 }
 
 // NewExitStrategy constructs with polling interval of 100 milliseconds without timeout by default
-func NewExitStrategy() *ExitStrategy {
-	return &ExitStrategy{
-		PollInterval: defaultPollInterval(),
-	}
-}
+func NewExitStrategy() *ExitStrategy { _ = "STUB: not implemented"; return nil }
 
 // fluent builders for each property
 // since go has neither covariance nor generics, the return type must be the type of the concrete implementation
@@ -34,14 +29,14 @@ func NewExitStrategy() *ExitStrategy {
 
 // WithExitTimeout can be used to change the default exit timeout
 func (ws *ExitStrategy) WithExitTimeout(exitTimeout time.Duration) *ExitStrategy {
-	ws.timeout = &exitTimeout
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // WithPollInterval can be used to override the default polling interval of 100 milliseconds
 func (ws *ExitStrategy) WithPollInterval(pollInterval time.Duration) *ExitStrategy {
-	ws.PollInterval = pollInterval
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // ForExit is the default construction for the fluid interface.
@@ -51,44 +46,19 @@ func (ws *ExitStrategy) WithPollInterval(pollInterval time.Duration) *ExitStrate
 //	wait.
 //		ForExit().
 //		WithPollInterval(1 * time.Second)
-func ForExit() *ExitStrategy {
-	return NewExitStrategy()
-}
+func ForExit() *ExitStrategy { _ = "STUB: not implemented"; return nil }
 
 func (ws *ExitStrategy) Timeout() *time.Duration {
-	return ws.timeout
+	_ = "STUB: not implemented"
+
+	// String returns a human-readable description of the wait strategy.
+	return nil
 }
 
-// String returns a human-readable description of the wait strategy.
-func (ws *ExitStrategy) String() string {
-	return "container to exit"
-}
+func (ws *ExitStrategy) String() string { _ = "STUB: not implemented"; return "" }
 
 // WaitUntilReady implements Strategy.WaitUntilReady
 func (ws *ExitStrategy) WaitUntilReady(ctx context.Context, target StrategyTarget) error {
-	if ws.timeout != nil {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, *ws.timeout)
-		defer cancel()
-	}
-
-	for {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		default:
-			state, err := target.State(ctx)
-			if err != nil {
-				if !strings.Contains(err.Error(), "No such container") {
-					return err
-				}
-				return nil
-			}
-			if state.Running {
-				time.Sleep(ws.PollInterval)
-				continue
-			}
-			return nil
-		}
-	}
+	_ = "STUB: not implemented"
+	return nil
 }

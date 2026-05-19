@@ -2,11 +2,8 @@ package wait
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"time"
-
-	"github.com/containerd/errdefs"
 )
 
 var (
@@ -23,23 +20,18 @@ type FileStrategy struct {
 }
 
 // NewFileStrategy constructs an FileStrategy strategy.
-func NewFileStrategy(file string) *FileStrategy {
-	return &FileStrategy{
-		file:         file,
-		pollInterval: defaultPollInterval(),
-	}
-}
+func NewFileStrategy(file string) *FileStrategy { _ = "STUB: not implemented"; return nil }
 
 // WithStartupTimeout can be used to change the default startup timeout
 func (ws *FileStrategy) WithStartupTimeout(startupTimeout time.Duration) *FileStrategy {
-	ws.timeout = &startupTimeout
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // WithPollInterval can be used to override the default polling interval of 100 milliseconds
 func (ws *FileStrategy) WithPollInterval(pollInterval time.Duration) *FileStrategy {
-	ws.pollInterval = pollInterval
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // WithMatcher can be used to consume the file content.
@@ -47,74 +39,35 @@ func (ws *FileStrategy) WithPollInterval(pollInterval time.Duration) *FileStrate
 // Any other error will be considered a failure.
 // Default: nil, will only wait for the file to exist.
 func (ws *FileStrategy) WithMatcher(matcher func(io.Reader) error) *FileStrategy {
-	ws.matcher = matcher
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // ForFile is a convenience method to assign FileStrategy
-func ForFile(file string) *FileStrategy {
-	return NewFileStrategy(file)
-}
+func ForFile(file string) *FileStrategy { _ = "STUB: not implemented"; return nil }
 
 // Timeout returns the timeout for the strategy
 func (ws *FileStrategy) Timeout() *time.Duration {
-	return ws.timeout
+	_ = "STUB: not implemented"
+
+	// String returns a human-readable description of the wait strategy.
+	return nil
 }
 
-// String returns a human-readable description of the wait strategy.
-func (ws *FileStrategy) String() string {
-	if ws.matcher != nil {
-		return fmt.Sprintf("file %q to exist and match condition", ws.file)
-	}
-	return fmt.Sprintf("file %q to exist", ws.file)
-}
+func (ws *FileStrategy) String() string { _ = "STUB: not implemented"; return "" }
 
 // WaitUntilReady waits until the file exists in the container and copies it to the target.
 func (ws *FileStrategy) WaitUntilReady(ctx context.Context, target StrategyTarget) error {
-	timeout := defaultStartupTimeout()
-	if ws.timeout != nil {
-		timeout = *ws.timeout
-	}
-
-	ctx, cancel := context.WithTimeout(ctx, timeout)
-	defer cancel()
-
-	timer := time.NewTicker(ws.pollInterval)
-	defer timer.Stop()
-	for {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case <-timer.C:
-			if err := ws.matchFile(ctx, target); err != nil {
-				if errdefs.IsNotFound(err) {
-					// Not found, continue polling.
-					continue
-				}
-
-				return fmt.Errorf("copy from container: %w", err)
-			}
-			return nil
-		}
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// Not found, continue polling.
 
 // matchFile tries to copy the file from the container and match it.
 func (ws *FileStrategy) matchFile(ctx context.Context, target StrategyTarget) error {
-	rc, err := target.CopyFileFromContainer(ctx, ws.file)
-	if err != nil {
-		return fmt.Errorf("copy from container: %w", err)
-	}
-	defer rc.Close()
-
-	if ws.matcher == nil {
-		// No matcher, just check if the file exists.
-		return nil
-	}
-
-	if err = ws.matcher(rc); err != nil {
-		return fmt.Errorf("matcher: %w", err)
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
+
+// No matcher, just check if the file exists.

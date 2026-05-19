@@ -29,33 +29,13 @@ var NoopOverrideContainerRequest = func(req testcontainers.ContainerRequest) (te
 
 // Deprecated: use testcontainers.ContainerCustomizer instead
 func (opt OverrideContainerRequestOption) Customize(req *testcontainers.GenericContainerRequest) error {
-	r, err := opt(req.ContainerRequest)
-	if err != nil {
-		return err
-	}
-
-	req.ContainerRequest = r
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // Deprecated: use testcontainers.CustomizeRequest instead
 // OverrideContainerRequest returns a function that can be used to merge the passed container request with one that is created by the LocalStack container
 func OverrideContainerRequest(r testcontainers.ContainerRequest) func(req testcontainers.ContainerRequest) (testcontainers.ContainerRequest, error) {
-	destContainerReq := testcontainers.GenericContainerRequest{
-		ContainerRequest: r,
-	}
-
-	return func(req testcontainers.ContainerRequest) (testcontainers.ContainerRequest, error) {
-		srcContainerReq := testcontainers.GenericContainerRequest{
-			ContainerRequest: req,
-		}
-
-		opt := testcontainers.CustomizeRequest(destContainerReq)
-		if err := opt.Customize(&srcContainerReq); err != nil {
-			return testcontainers.ContainerRequest{}, err
-		}
-
-		return srcContainerReq.ContainerRequest, nil
-	}
+	_ = "STUB: not implemented"
+	return nil
 }

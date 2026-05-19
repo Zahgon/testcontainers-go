@@ -2,10 +2,8 @@ package consul
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const (
@@ -27,58 +25,31 @@ type ConsulContainer struct {
 //
 //nolint:revive,staticcheck //FIXME
 func (c *ConsulContainer) ApiEndpoint(ctx context.Context) (string, error) {
-	return c.PortEndpoint(ctx, defaultHTTPAPIPort, "")
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // WithConfigString takes in a JSON string of keys and values to define a configuration to be used by the instance.
 func WithConfigString(config string) testcontainers.CustomizeRequestOption {
-	return testcontainers.WithEnv(map[string]string{
-		"CONSUL_LOCAL_CONFIG": config,
-	})
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // WithConfigFile takes in a path to a JSON file to define a configuration to be used by the instance.
 func WithConfigFile(configPath string) testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		cf := testcontainers.ContainerFile{
-			HostFilePath:      configPath,
-			ContainerFilePath: "/consul/config/node.json",
-			FileMode:          0o755,
-		}
-		req.Files = append(req.Files, cf)
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // Deprecated: use Run instead
 // RunContainer creates an instance of the Consul container type
 func RunContainer(ctx context.Context, opts ...testcontainers.ContainerCustomizer) (*ConsulContainer, error) {
-	return Run(ctx, "hashicorp/consul:1.15", opts...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Run creates an instance of the Consul container type
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*ConsulContainer, error) {
-	moduleOpts := make([]testcontainers.ContainerCustomizer, 0, 2+len(opts))
-	moduleOpts = append(moduleOpts,
-		testcontainers.WithExposedPorts(defaultHTTPAPIPort+"/tcp", defaultBrokerPort+"/tcp", defaultBrokerPort+"/udp"),
-		testcontainers.WithWaitStrategy(
-			wait.ForLog("Consul agent running!"),
-			wait.ForListeningPort(defaultHTTPAPIPort+"/tcp"),
-		),
-	)
-
-	moduleOpts = append(moduleOpts, opts...)
-
-	ctr, err := testcontainers.Run(ctx, img, moduleOpts...)
-	var c *ConsulContainer
-	if ctr != nil {
-		c = &ConsulContainer{Container: ctr}
-	}
-
-	if err != nil {
-		return c, fmt.Errorf("run consul: %w", err)
-	}
-
-	return c, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }

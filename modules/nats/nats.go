@@ -2,10 +2,8 @@ package nats
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const (
@@ -24,63 +22,28 @@ type NATSContainer struct {
 // Deprecated: use Run instead
 // RunContainer creates an instance of the NATS container type
 func RunContainer(ctx context.Context, opts ...testcontainers.ContainerCustomizer) (*NATSContainer, error) {
-	return Run(ctx, "nats:2.11.7", opts...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Run creates an instance of the NATS container type
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*NATSContainer, error) {
+	_ = "STUB: not implemented"
 	// Gather all config options (defaults and then apply provided options)
-	settings := defaultOptions()
-	for _, opt := range opts {
-		if apply, ok := opt.(CmdOption); ok {
-			apply(&settings)
-		}
-	}
-
-	moduleOpts := []testcontainers.ContainerCustomizer{
-		testcontainers.WithExposedPorts(defaultClientPort, defaultRoutingPort, defaultMonitoringPort),
-		testcontainers.WithCmd("-DV", "-js"),
-		testcontainers.WithWaitStrategy(wait.ForListeningPort(defaultClientPort)),
-	}
-
-	moduleOpts = append(moduleOpts, opts...)
-
-	// Include the command line arguments
-	cmdArgs := make([]string, 0, len(settings.CmdArgs)*2)
-	for k, v := range settings.CmdArgs {
-		// always prepend the dash because it was removed in the options
-		cmdArgs = append(cmdArgs, "--"+k, v)
-	}
-	if len(cmdArgs) > 0 {
-		moduleOpts = append(moduleOpts, testcontainers.WithCmdArgs(cmdArgs...))
-	}
-
-	ctr, err := testcontainers.Run(ctx, img, moduleOpts...)
-	var c *NATSContainer
-	if ctr != nil {
-		c = &NATSContainer{
-			Container: ctr,
-			User:      settings.CmdArgs["user"],
-			Password:  settings.CmdArgs["pass"],
-		}
-	}
-
-	if err != nil {
-		return c, fmt.Errorf("run nats: %w", err)
-	}
-
-	return c, nil
+	return nil, nil
 }
 
+// Include the command line arguments
+
+// always prepend the dash because it was removed in the options
+
 func (c *NATSContainer) MustConnectionString(ctx context.Context) string {
-	addr, err := c.ConnectionString(ctx)
-	if err != nil {
-		panic(err)
-	}
-	return addr
+	_ = "STUB: not implemented"
+	return ""
 }
 
 // ConnectionString returns a connection string for the NATS container
 func (c *NATSContainer) ConnectionString(ctx context.Context) (string, error) {
-	return c.PortEndpoint(ctx, defaultClientPort, "nats")
+	_ = "STUB: not implemented"
+	return "", nil
 }

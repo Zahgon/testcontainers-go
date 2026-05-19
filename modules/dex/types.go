@@ -2,7 +2,6 @@ package dex
 
 import (
 	"errors"
-	"fmt"
 )
 
 // validClientGrantTypes is the set of OAuth2 grant types Dex understands.
@@ -27,9 +26,13 @@ type Client struct {
 }
 
 // ID returns the client_id.
-func (c Client) ID() string { return c.id }
+func (c Client) ID() string {
+	_ = "STUB: not implemented"
 
-// ClientOption configures a Client during NewClient.
+	// ClientOption configures a Client during NewClient.
+	return ""
+}
+
 type ClientOption func(*Client) error
 
 // NewClient creates a Client registered statically at boot. ID is required;
@@ -37,55 +40,24 @@ type ClientOption func(*Client) error
 //
 // Returns an error when the ID is blank or any option rejects its input.
 func NewClient(id string, opts ...ClientOption) (Client, error) {
-	if id == "" {
-		return Client{}, errors.New("dex: client id must not be blank")
-	}
-	c := Client{id: id}
-	for _, opt := range opts {
-		if err := opt(&c); err != nil {
-			return Client{}, err
-		}
-	}
-	return c, nil
+	_ = "STUB: not implemented"
+	return *new(Client), nil
 }
 
 // WithClientSecret sets the client secret. Required for confidential clients;
 // omit for public (PKCE) clients via WithClientPublic.
-func WithClientSecret(s string) ClientOption {
-	return func(c *Client) error {
-		if s == "" {
-			return errors.New("dex: client secret must not be blank")
-		}
-		c.secret = s
-		return nil
-	}
-}
+func WithClientSecret(s string) ClientOption { _ = "STUB: not implemented"; return *new(ClientOption) }
 
 // WithClientName sets the human-readable display name shown on Dex's consent
 // screen.
-func WithClientName(n string) ClientOption {
-	return func(c *Client) error {
-		if n == "" {
-			return errors.New("dex: client name must not be blank")
-		}
-		c.name = n
-		return nil
-	}
-}
+func WithClientName(n string) ClientOption { _ = "STUB: not implemented"; return *new(ClientOption) }
 
 // WithClientRedirectURIs appends to the list of allowed redirect URIs. At
 // least one is required for authorization_code clients. Values are appended
 // across calls; blank entries are rejected.
 func WithClientRedirectURIs(uris ...string) ClientOption {
-	return func(c *Client) error {
-		for _, u := range uris {
-			if u == "" {
-				return errors.New("dex: client redirect URI must not be blank")
-			}
-		}
-		c.redirectURIs = append(c.redirectURIs, uris...)
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(ClientOption)
 }
 
 // WithClientGrantTypes appends to the allowed OAuth2 grants. Defaults to
@@ -96,28 +68,13 @@ func WithClientRedirectURIs(uris ...string) ClientOption {
 // added at runtime via AddClient inherit Dex's defaults because the gRPC
 // api.Client proto has no grant_types field.
 func WithClientGrantTypes(grants ...string) ClientOption {
-	return func(c *Client) error {
-		for _, g := range grants {
-			if g == "" {
-				return errors.New("dex: client grant type must not be blank")
-			}
-			if _, ok := validClientGrantTypes[g]; !ok {
-				return fmt.Errorf("dex: unsupported client grant type %q", g)
-			}
-		}
-		c.grantTypes = append(c.grantTypes, grants...)
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(ClientOption)
 }
 
 // WithClientPublic marks the client as public — no secret, intended for PKCE
 // flows from untrusted clients (mobile, SPA).
-func WithClientPublic() ClientOption {
-	return func(c *Client) error {
-		c.public = true
-		return nil
-	}
-}
+func WithClientPublic() ClientOption { _ = "STUB: not implemented"; return *new(ClientOption) }
 
 // User is a static password entry in Dex's password connector. Construct
 // with NewUser.
@@ -129,44 +86,26 @@ type User struct {
 }
 
 // Email returns the email address.
-func (u User) Email() string { return u.email }
+func (u User) Email() string {
+	_ = "STUB: not implemented"
 
-// UserOption configures a User during NewUser.
+	// UserOption configures a User during NewUser.
+	return ""
+}
+
 type UserOption func(*User) error
 
 // NewUser creates a static password entry. Email, username and password are
 // required; a user ID may be pinned via WithUserID (else a UUIDv4 is
 // generated at YAML render time).
 func NewUser(email, username, password string, opts ...UserOption) (User, error) {
-	if email == "" {
-		return User{}, errors.New("dex: user email must not be blank")
-	}
-	if username == "" {
-		return User{}, errors.New("dex: user username must not be blank")
-	}
-	if password == "" {
-		return User{}, errors.New("dex: user password must not be blank")
-	}
-	u := User{email: email, username: username, password: password}
-	for _, opt := range opts {
-		if err := opt(&u); err != nil {
-			return User{}, err
-		}
-	}
-	return u, nil
+	_ = "STUB: not implemented"
+	return *new(User), nil
 }
 
 // WithUserID pins the stable subject claim. When unset, NewUser leaves
 // userID blank and a UUIDv4 is generated at YAML render time.
-func WithUserID(id string) UserOption {
-	return func(u *User) error {
-		if id == "" {
-			return errors.New("dex: user id must not be blank")
-		}
-		u.userID = id
-		return nil
-	}
-}
+func WithUserID(id string) UserOption { _ = "STUB: not implemented"; return *new(UserOption) }
 
 // ConnectorType selects a Dex connector kind.
 type ConnectorType string

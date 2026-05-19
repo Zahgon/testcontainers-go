@@ -1,11 +1,7 @@
 package wait
 
 import (
-	"bytes"
 	"context"
-	"errors"
-	"fmt"
-	"io"
 	"regexp"
 	"time"
 )
@@ -22,14 +18,10 @@ type PermanentError struct {
 }
 
 // Error implements the error interface.
-func (e *PermanentError) Error() string {
-	return e.err.Error()
-}
+func (e *PermanentError) Error() string { _ = "STUB: not implemented"; return "" }
 
 // NewPermanentError creates a new PermanentError.
-func NewPermanentError(err error) *PermanentError {
-	return &PermanentError{err: err}
-}
+func NewPermanentError(err error) *PermanentError { _ = "STUB: not implemented"; return nil }
 
 // LogStrategy will wait until a given log entry shows up in the docker logs
 type LogStrategy struct {
@@ -56,24 +48,14 @@ type LogStrategy struct {
 }
 
 // NewLogStrategy constructs with polling interval of 100 milliseconds and startup timeout of 60 seconds by default
-func NewLogStrategy(log string) *LogStrategy {
-	return &LogStrategy{
-		Log:          log,
-		IsRegexp:     false,
-		Occurrence:   1,
-		PollInterval: defaultPollInterval(),
-	}
-}
+func NewLogStrategy(log string) *LogStrategy { _ = "STUB: not implemented"; return nil }
 
 // fluent builders for each property
 // since go has neither covariance nor generics, the return type must be the type of the concrete implementation
 // this is true for all properties, even the "shared" ones like startupTimeout
 
 // AsRegexp can be used to change the default behavior of the log strategy to use regexp instead of plain text
-func (ws *LogStrategy) AsRegexp() *LogStrategy {
-	ws.IsRegexp = true
-	return ws
-}
+func (ws *LogStrategy) AsRegexp() *LogStrategy { _ = "STUB: not implemented"; return nil }
 
 // Submatch configures a function that will be called with the result of
 // [regexp.Regexp.FindAllSubmatch], allowing the caller to process the results.
@@ -82,30 +64,26 @@ func (ws *LogStrategy) AsRegexp() *LogStrategy {
 // it will retry until the timeout is reached.
 // [LogStrategy.Occurrence] is ignored if this option is set.
 func (ws *LogStrategy) Submatch(callback func(pattern string, matches [][][]byte) error) *LogStrategy {
-	ws.submatchCallback = callback
-
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // WithStartupTimeout can be used to change the default startup timeout
 func (ws *LogStrategy) WithStartupTimeout(timeout time.Duration) *LogStrategy {
-	ws.timeout = &timeout
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // WithPollInterval can be used to override the default polling interval of 100 milliseconds
 func (ws *LogStrategy) WithPollInterval(pollInterval time.Duration) *LogStrategy {
-	ws.PollInterval = pollInterval
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (ws *LogStrategy) WithOccurrence(o int) *LogStrategy {
+	_ = "STUB: not implemented"
 	// the number of occurrence needs to be positive
-	if o <= 0 {
-		o = 1
-	}
-	ws.Occurrence = o
-	return ws
+	return nil
 }
 
 // ForLog is the default construction for the fluid interface.
@@ -115,115 +93,34 @@ func (ws *LogStrategy) WithOccurrence(o int) *LogStrategy {
 //	wait.
 //		ForLog("some text").
 //		WithPollInterval(1 * time.Second)
-func ForLog(log string) *LogStrategy {
-	return NewLogStrategy(log)
-}
+func ForLog(log string) *LogStrategy { _ = "STUB: not implemented"; return nil }
 
 func (ws *LogStrategy) Timeout() *time.Duration {
-	return ws.timeout
+	_ = "STUB: not implemented"
+
+	// String returns a human-readable description of the wait strategy.
+	return nil
 }
 
-// String returns a human-readable description of the wait strategy.
-func (ws *LogStrategy) String() string {
-	logType := "log message"
-	if ws.IsRegexp {
-		logType = "log pattern"
-	}
-
-	occurrence := ""
-	if ws.Occurrence > 1 {
-		occurrence = fmt.Sprintf(" (occurrence: %d)", ws.Occurrence)
-	}
-
-	return fmt.Sprintf("%s %q%s", logType, ws.Log, occurrence)
-}
+func (ws *LogStrategy) String() string { _ = "STUB: not implemented"; return "" }
 
 // WaitUntilReady implements Strategy.WaitUntilReady
 func (ws *LogStrategy) WaitUntilReady(ctx context.Context, target StrategyTarget) error {
-	timeout := defaultStartupTimeout()
-	if ws.timeout != nil {
-		timeout = *ws.timeout
-	}
-
-	switch {
-	case ws.submatchCallback != nil:
-		ws.re = regexp.MustCompile(ws.Log)
-		ws.check = ws.checkSubmatch
-	case ws.IsRegexp:
-		ws.re = regexp.MustCompile(ws.Log)
-		ws.check = ws.checkRegexp
-	default:
-		ws.log = []byte(ws.Log)
-		ws.check = ws.checkCount
-	}
-
-	ctx, cancel := context.WithTimeout(ctx, timeout)
-	defer cancel()
-
-	var lastLen int
-	var lastError error
-	for {
-		select {
-		case <-ctx.Done():
-			return errors.Join(lastError, ctx.Err())
-		default:
-			checkErr := checkTarget(ctx, target)
-
-			reader, err := target.Logs(ctx)
-			if err != nil {
-				// TODO: fix as this will wait for timeout if the logs are not available.
-				time.Sleep(ws.PollInterval)
-				continue
-			}
-
-			b, err := io.ReadAll(reader)
-			if err != nil {
-				// TODO: fix as this will wait for timeout if the logs are not readable.
-				time.Sleep(ws.PollInterval)
-				continue
-			}
-
-			if lastLen == len(b) && checkErr != nil {
-				// Log length hasn't changed so we're not making progress.
-				return checkErr
-			}
-
-			if err := ws.check(b); err != nil {
-				var errPermanent *PermanentError
-				if errors.As(err, &errPermanent) {
-					return err
-				}
-
-				lastError = err
-				lastLen = len(b)
-				time.Sleep(ws.PollInterval)
-				continue
-			}
-
-			return nil
-		}
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// TODO: fix as this will wait for timeout if the logs are not available.
+
+// TODO: fix as this will wait for timeout if the logs are not readable.
+
+// Log length hasn't changed so we're not making progress.
 
 // checkCount checks if the log entry is present in the logs using a string count.
-func (ws *LogStrategy) checkCount(b []byte) error {
-	if count := bytes.Count(b, ws.log); count < ws.Occurrence {
-		return fmt.Errorf("%q matched %d times, expected %d", ws.Log, count, ws.Occurrence)
-	}
-
-	return nil
-}
+func (ws *LogStrategy) checkCount(b []byte) error { _ = "STUB: not implemented"; return nil }
 
 // checkRegexp checks if the log entry is present in the logs using a regexp count.
-func (ws *LogStrategy) checkRegexp(b []byte) error {
-	if matches := ws.re.FindAll(b, -1); len(matches) < ws.Occurrence {
-		return fmt.Errorf("`%s` matched %d times, expected %d", ws.Log, len(matches), ws.Occurrence)
-	}
-
-	return nil
-}
+func (ws *LogStrategy) checkRegexp(b []byte) error { _ = "STUB: not implemented"; return nil }
 
 // checkSubmatch checks if the log entry is present in the logs using a regexp sub match callback.
-func (ws *LogStrategy) checkSubmatch(b []byte) error {
-	return ws.submatchCallback(ws.Log, ws.re.FindAllSubmatch(b, -1))
-}
+func (ws *LogStrategy) checkSubmatch(b []byte) error { _ = "STUB: not implemented"; return nil }

@@ -93,14 +93,8 @@ func init() {
 	sessionID = hex.EncodeToString(hasher.Sum(nil))
 }
 
-func ProcessID() string {
-	return processID
-}
+func ProcessID() string { _ = "STUB: not implemented"; return "" }
 
-func ProjectPath() string {
-	return projectPath
-}
+func ProjectPath() string { _ = "STUB: not implemented"; return "" }
 
-func SessionID() string {
-	return sessionID
-}
+func SessionID() string { _ = "STUB: not implemented"; return "" }

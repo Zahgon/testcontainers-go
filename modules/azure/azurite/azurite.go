@@ -2,12 +2,8 @@ package azurite
 
 import (
 	"context"
-	"fmt"
-
-	"github.com/moby/moby/api/types/network"
 
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const (
@@ -35,99 +31,37 @@ type Container struct {
 
 // ServiceURL returns the URL of the given service
 func (c *Container) ServiceURL(ctx context.Context, srv Service) (string, error) {
-	port, err := servicePort(srv)
-	if err != nil {
-		return "", err
-	}
-
-	return c.PortEndpoint(ctx, port, "http")
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // BlobServiceURL returns the URL of the Blob service
 func (c *Container) BlobServiceURL(ctx context.Context) (string, error) {
-	return c.ServiceURL(ctx, BlobService)
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // QueueServiceURL returns the URL of the Queue service
 func (c *Container) QueueServiceURL(ctx context.Context) (string, error) {
-	return c.ServiceURL(ctx, QueueService)
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // TableServiceURL returns the URL of the Table service
 func (c *Container) TableServiceURL(ctx context.Context) (string, error) {
-	return c.ServiceURL(ctx, TableService)
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
-func servicePort(srv Service) (string, error) {
-	switch srv {
-	case BlobService:
-		return BlobPort, nil
-	case QueueService:
-		return QueuePort, nil
-	case TableService:
-		return TablePort, nil
-	default:
-		return "", fmt.Errorf("unknown service: %s", srv)
-	}
-}
+func servicePort(srv Service) (string, error) { _ = "STUB: not implemented"; return "", nil }
 
 // Run creates an instance of the Azurite container type
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*Container, error) {
+	_ = "STUB: not implemented"
 	// 1. Gather all config options (defaults and then apply provided options)
-	settings := defaultOptions()
-	for _, opt := range opts {
-		if o, ok := opt.(Option); ok {
-			if err := o(&settings); err != nil {
-				return nil, fmt.Errorf("azurite option: %w", err)
-			}
-		}
-	}
-
-	entrypoint := "azurite"
-	if len(settings.EnabledServices) == 1 && settings.EnabledServices[0] != TableService {
-		// Use azurite-table in future once it matures. Graceful shutdown is currently very slow.
-		entrypoint = fmt.Sprintf("%s-%s", entrypoint, settings.EnabledServices[0])
-	}
-	moduleOpts := []testcontainers.ContainerCustomizer{testcontainers.WithEntrypoint(entrypoint)}
-
-	// 2. evaluate the enabled services to apply the right wait strategy and Cmd options
-	if len(settings.EnabledServices) > 0 {
-		cmd := make([]string, 0, len(settings.EnabledServices))
-		exposedPorts := make([]string, 0, len(settings.EnabledServices))
-		waitingFor := make([]wait.Strategy, 0, len(settings.EnabledServices))
-
-		for _, srv := range settings.EnabledServices {
-			port, err := servicePort(srv)
-			if err != nil {
-				return nil, err
-			}
-			p, err := network.ParsePort(port)
-			if err != nil {
-				return nil, err
-			}
-			cmd = append(cmd, fmt.Sprintf("--%sHost", srv), "0.0.0.0", fmt.Sprintf("--%sPort", srv), p.Port())
-			exposedPorts = append(exposedPorts, string(port))
-			waitingFor = append(waitingFor, wait.ForListeningPort(port))
-		}
-
-		moduleOpts = append(moduleOpts,
-			testcontainers.WithCmd(cmd...),
-			testcontainers.WithExposedPorts(exposedPorts...),
-			testcontainers.WithWaitStrategy(waitingFor...),
-		)
-	}
-
-	moduleOpts = append(moduleOpts, opts...)
-
-	ctr, err := testcontainers.Run(ctx, img, moduleOpts...)
-	var c *Container
-	if ctr != nil {
-		c = &Container{Container: ctr, opts: settings}
-	}
-
-	if err != nil {
-		return c, fmt.Errorf("run azurite: %w", err)
-	}
-
-	return c, nil
+	return nil, nil
 }
+
+// Use azurite-table in future once it matures. Graceful shutdown is currently very slow.
+
+// 2. evaluate the enabled services to apply the right wait strategy and Cmd options

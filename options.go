@@ -1,19 +1,12 @@
 package testcontainers
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"maps"
-	"path"
 	"time"
 
-	"dario.cat/mergo"
 	"github.com/moby/moby/api/types/container"
 	"github.com/moby/moby/api/types/network"
 
 	tcexec "github.com/testcontainers/testcontainers-go/exec"
-	"github.com/testcontainers/testcontainers-go/internal/core"
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
@@ -28,122 +21,78 @@ type ContainerCustomizer interface {
 type CustomizeRequestOption func(req *GenericContainerRequest) error
 
 func (opt CustomizeRequestOption) Customize(req *GenericContainerRequest) error {
-	return opt(req)
+	_ = "STUB: not implemented"
+
+	// CustomizeRequest returns a function that can be used to merge the passed container request with the one that is used by the container.
+	// Slices and Maps will be appended.
+	return nil
 }
 
-// CustomizeRequest returns a function that can be used to merge the passed container request with the one that is used by the container.
-// Slices and Maps will be appended.
 func CustomizeRequest(src GenericContainerRequest) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		if err := mergo.Merge(req, &src, mergo.WithOverride, mergo.WithAppendSlice); err != nil {
-			return fmt.Errorf("error merging container request, keeping the original one: %w", err)
-		}
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithDockerfile allows to build a container from a Dockerfile
 func WithDockerfile(df FromDockerfile) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.FromDockerfile = df
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithConfigModifier allows to override the default container config
 func WithConfigModifier(modifier func(config *container.Config)) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.ConfigModifier = modifier
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithEndpointSettingsModifier allows to override the default endpoint settings
 func WithEndpointSettingsModifier(modifier func(settings map[string]*network.EndpointSettings)) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.EndpointSettingsModifier = modifier
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithEnv sets the environment variables for a container.
 // If the environment variable already exists, it will be overridden.
 func WithEnv(envs map[string]string) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		if req.Env == nil {
-			req.Env = map[string]string{}
-		}
-
-		maps.Copy(req.Env, envs)
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithHostConfigModifier allows to override the default host config
 func WithHostConfigModifier(modifier func(hostConfig *container.HostConfig)) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.HostConfigModifier = modifier
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithHostPortAccess allows to expose the host ports to the container
 func WithHostPortAccess(ports ...int) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		if req.HostAccessPorts == nil {
-			req.HostAccessPorts = []int{}
-		}
-
-		req.HostAccessPorts = append(req.HostAccessPorts, ports...)
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithName will set the name of the container.
 func WithName(containerName string) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		if containerName == "" {
-			return errors.New("container name must be provided")
-		}
-		req.Name = containerName
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithNoStart will prevent the container from being started after creation.
 func WithNoStart() CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.Started = false
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithReuseByName will mark a container to be reused if it exists or create a new one if it doesn't.
 // A container name must be provided to identify the container to be reused.
 func WithReuseByName(containerName string) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		if err := WithName(containerName)(req); err != nil {
-			return err
-		}
-
-		req.Reuse = true
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithImage sets the image for a container
 func WithImage(image string) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.Image = image
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // imageSubstitutor {
@@ -166,37 +115,20 @@ type CustomHubSubstitutor struct {
 
 // NewCustomHubSubstitutor creates a new CustomHubSubstitutor
 func NewCustomHubSubstitutor(hub string) CustomHubSubstitutor {
-	return CustomHubSubstitutor{
-		hub: hub,
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomHubSubstitutor)
 }
 
 // Description returns the name of the type and a short description of how it modifies the image.
-func (c CustomHubSubstitutor) Description() string {
-	return fmt.Sprintf("CustomHubSubstitutor (replaces hub with %s)", c.hub)
-}
+func (c CustomHubSubstitutor) Description() string { _ = "STUB: not implemented"; return "" }
 
 // Substitute replaces the hub of the image with the provided one, with certain conditions:
 //   - if the hub is empty, the image is returned as is.
 //   - if the image already contains a registry, the image is returned as is.
 //   - if the HubImageNamePrefix configuration value is set, the image is returned as is.
 func (c CustomHubSubstitutor) Substitute(image string) (string, error) {
-	registry := core.ExtractRegistry(image, "")
-	cfg := ReadConfig()
-
-	exclusions := []func() bool{
-		func() bool { return c.hub == "" },
-		func() bool { return registry != "" },
-		func() bool { return cfg.Config.HubImageNamePrefix != "" },
-	}
-
-	for _, exclusion := range exclusions {
-		if exclusion() {
-			return image, nil
-		}
-	}
-
-	return path.Join(c.hub, image), nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // prependHubRegistry represents a way to prepend a custom Hub registry to the image name,
@@ -207,15 +139,12 @@ type prependHubRegistry struct {
 
 // newPrependHubRegistry creates a new prependHubRegistry
 func newPrependHubRegistry(hubPrefix string) prependHubRegistry {
-	return prependHubRegistry{
-		prefix: hubPrefix,
-	}
+	_ = "STUB: not implemented"
+	return *new(prependHubRegistry)
 }
 
 // Description returns the name of the type and a short description of how it modifies the image.
-func (p prependHubRegistry) Description() string {
-	return fmt.Sprintf("HubImageSubstitutor (prepends %s)", p.prefix)
-}
+func (p prependHubRegistry) Description() string { _ = "STUB: not implemented"; return "" }
 
 // Substitute prepends the Hub prefix to the image name, with certain conditions:
 //   - if the prefix is empty, the image is returned as is.
@@ -223,44 +152,27 @@ func (p prependHubRegistry) Description() string {
 //   - if the image is a Docker Hub image where the hub registry is explicitly part of the name
 //     (i.e. anything with a registry.hub.docker.com host part), the image is returned as is.
 func (p prependHubRegistry) Substitute(image string) (string, error) {
-	registry := core.ExtractRegistry(image, "")
-
-	// add the exclusions in the right order
-	exclusions := []func() bool{
-		func() bool { return p.prefix == "" },                        // no prefix set at the configuration level
-		func() bool { return registry != "" },                        // non-hub image
-		func() bool { return registry == "docker.io" },               // explicitly including docker.io
-		func() bool { return registry == "registry.hub.docker.com" }, // explicitly including registry.hub.docker.com
-	}
-
-	for _, exclusion := range exclusions {
-		if exclusion() {
-			return image, nil
-		}
-	}
-
-	return path.Join(p.prefix, image), nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
+
+// add the exclusions in the right order
+
+// no prefix set at the configuration level
+// non-hub image
+// explicitly including docker.io
+// explicitly including registry.hub.docker.com
 
 // WithImageSubstitutors sets the image substitutors for a container
 func WithImageSubstitutors(fn ...ImageSubstitutor) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.ImageSubstitutors = fn
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithLogConsumers sets the log consumers for a container
 func WithLogConsumers(consumer ...LogConsumer) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		if req.LogConsumerCfg == nil {
-			req.LogConsumerCfg = &LogConsumerConfig{}
-		}
-
-		req.LogConsumerCfg.Consumers = consumer
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithLogConsumerConfig sets the log consumer config for a container.
@@ -268,10 +180,8 @@ func WithLogConsumers(consumer ...LogConsumer) CustomizeRequestOption {
 // including the log consumers and the log production options,
 // so it should be used with care.
 func WithLogConsumerConfig(config *LogConsumerConfig) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.LogConsumerCfg = config
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // Executable represents an executable command to be sent to a container, including options,
@@ -291,248 +201,157 @@ type ExecOptions struct {
 }
 
 func (ce ExecOptions) Options() []tcexec.ProcessOption {
-	return ce.opts
+	_ = "STUB: not implemented"
+
+	// RawCommand is a type that implements Executable and represents a command to be sent to a container
+	return nil
 }
 
-// RawCommand is a type that implements Executable and represents a command to be sent to a container
 type RawCommand struct {
 	ExecOptions
 	cmds []string
 }
 
 func NewRawCommand(cmds []string, opts ...tcexec.ProcessOption) RawCommand {
-	return RawCommand{
-		cmds: cmds,
-		ExecOptions: ExecOptions{
-			opts: opts,
-		},
-	}
+	_ = "STUB: not implemented"
+	return *new(RawCommand)
 }
 
 // AsCommand returns the command as a slice of strings
 func (r RawCommand) AsCommand() []string {
-	return r.cmds
+	_ = "STUB: not implemented"
+
+	// WithStartupCommand will execute the command representation of each Executable into the container.
+	// It will leverage the container lifecycle hooks to call the command right after the container
+	// is started.
+	return nil
 }
 
-// WithStartupCommand will execute the command representation of each Executable into the container.
-// It will leverage the container lifecycle hooks to call the command right after the container
-// is started.
 func WithStartupCommand(execs ...Executable) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		startupCommandsHook := ContainerLifecycleHooks{
-			PostStarts: []ContainerHook{},
-		}
-
-		for _, exec := range execs {
-			execFn := func(ctx context.Context, c Container) error {
-				_, _, err := c.Exec(ctx, exec.AsCommand(), exec.Options()...)
-				return err
-			}
-
-			startupCommandsHook.PostStarts = append(startupCommandsHook.PostStarts, execFn)
-		}
-
-		req.LifecycleHooks = append(req.LifecycleHooks, startupCommandsHook)
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithAfterReadyCommand will execute the command representation of each Executable into the container.
 // It will leverage the container lifecycle hooks to call the command right after the container
 // is ready.
 func WithAfterReadyCommand(execs ...Executable) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		postReadiesHook := make([]ContainerHook, 0, len(execs))
-
-		for _, exec := range execs {
-			execFn := func(ctx context.Context, c Container) error {
-				_, _, err := c.Exec(ctx, exec.AsCommand(), exec.Options()...)
-				return err
-			}
-
-			postReadiesHook = append(postReadiesHook, execFn)
-		}
-
-		req.LifecycleHooks = append(req.LifecycleHooks, ContainerLifecycleHooks{
-			PostReadies: postReadiesHook,
-		})
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithWaitStrategy replaces the wait strategy for a container, using 60 seconds as deadline
 func WithWaitStrategy(strategies ...wait.Strategy) CustomizeRequestOption {
-	return WithWaitStrategyAndDeadline(60*time.Second, strategies...)
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithAdditionalWaitStrategy appends the wait strategy for a container, using 60 seconds as deadline
 func WithAdditionalWaitStrategy(strategies ...wait.Strategy) CustomizeRequestOption {
-	return WithAdditionalWaitStrategyAndDeadline(60*time.Second, strategies...)
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithWaitStrategyAndDeadline replaces the wait strategy for a container, including deadline
 func WithWaitStrategyAndDeadline(deadline time.Duration, strategies ...wait.Strategy) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.WaitingFor = wait.ForAll(strategies...).WithDeadline(deadline)
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithAdditionalWaitStrategyAndDeadline appends the wait strategy for a container, including deadline
 func WithAdditionalWaitStrategyAndDeadline(deadline time.Duration, strategies ...wait.Strategy) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		if req.WaitingFor == nil {
-			req.WaitingFor = wait.ForAll(strategies...).WithDeadline(deadline)
-			return nil
-		}
-
-		wss := make([]wait.Strategy, 0, len(strategies)+1)
-		wss = append(wss, req.WaitingFor)
-		wss = append(wss, strategies...)
-
-		req.WaitingFor = wait.ForAll(wss...).WithDeadline(deadline)
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithImageMount mounts an image to a container, passing the source image name,
 // the relative subpath to mount in that image, and the mount point in the target container.
 // This option validates that the subpath is a relative path, raising an error otherwise.
 func WithImageMount(source string, subpath string, target ContainerMountTarget) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		src := NewDockerImageMountSource(source, subpath)
-
-		if err := src.Validate(); err != nil {
-			return fmt.Errorf("validate image mount source: %w", err)
-		}
-
-		req.Mounts = append(req.Mounts, ContainerMount{
-			Source: src,
-			Target: target,
-		})
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithAlwaysPull will pull the image before starting the container
 func WithAlwaysPull() CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.AlwaysPullImage = true
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithImagePlatform sets the platform for a container
 func WithImagePlatform(platform string) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.ImagePlatform = platform
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithEntrypoint completely replaces the entrypoint of a container
 func WithEntrypoint(entrypoint ...string) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.Entrypoint = entrypoint
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithEntrypointArgs appends the entrypoint arguments to the entrypoint of a container
 func WithEntrypointArgs(entrypointArgs ...string) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.Entrypoint = append(req.Entrypoint, entrypointArgs...)
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithExposedPorts appends the ports to the exposed ports for a container
 func WithExposedPorts(ports ...string) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.ExposedPorts = append(req.ExposedPorts, ports...)
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithCmd completely replaces the command for a container
 func WithCmd(cmd ...string) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.Cmd = cmd
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithCmdArgs appends the command arguments to the command for a container
 func WithCmdArgs(cmdArgs ...string) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.Cmd = append(req.Cmd, cmdArgs...)
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithLabels appends the labels to the labels for a container
 func WithLabels(labels map[string]string) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		if req.Labels == nil {
-			req.Labels = make(map[string]string)
-		}
-		maps.Copy(req.Labels, labels)
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithLifecycleHooks completely replaces the lifecycle hooks for a container
 func WithLifecycleHooks(hooks ...ContainerLifecycleHooks) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.LifecycleHooks = hooks
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithAdditionalLifecycleHooks appends lifecycle hooks to the existing ones for a container
 func WithAdditionalLifecycleHooks(hooks ...ContainerLifecycleHooks) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.LifecycleHooks = append(req.LifecycleHooks, hooks...)
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithMounts appends the mounts to the mounts for a container
 func WithMounts(mounts ...ContainerMount) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.Mounts = append(req.Mounts, mounts...)
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithTmpfs appends the tmpfs mounts to the tmpfs mounts for a container
 func WithTmpfs(tmpfs map[string]string) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		if req.Tmpfs == nil {
-			req.Tmpfs = make(map[string]string)
-		}
-		maps.Copy(req.Tmpfs, tmpfs)
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithFiles appends the files to the files for a container
 func WithFiles(files ...ContainerFile) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.Files = append(req.Files, files...)
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }
 
 // WithProvider sets the provider type for a container
 func WithProvider(provider ProviderType) CustomizeRequestOption {
-	return func(req *GenericContainerRequest) error {
-		req.ProviderType = provider
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(CustomizeRequestOption)
 }

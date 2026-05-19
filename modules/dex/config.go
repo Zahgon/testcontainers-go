@@ -1,13 +1,7 @@
 package dex
 
 import (
-	"crypto/rand"
-	"errors"
-	"fmt"
 	"log/slog"
-
-	"golang.org/x/crypto/bcrypt"
-	"gopkg.in/yaml.v3"
 )
 
 // testBcryptCost is the bcrypt work factor used when hashing test passwords.
@@ -91,126 +85,20 @@ var baseGrantTypes = []string{
 // render serializes an options struct into a Dex YAML config payload. It
 // validates that at least one auth source is configured and that the
 // issuer has been populated.
-func render(o options) ([]byte, error) {
-	if o.issuer == "" {
-		return nil, errors.New("dex: issuer is empty (internal bug — Run should populate before render)")
-	}
+func render(o options) ([]byte, error) { _ = "STUB: not implemented"; return nil, nil }
 
-	if !o.enablePasswordDB && len(o.connectors) == 0 {
-		return nil, ErrNoAuthSource
-	}
-
-	storage := storageBlock{Type: string(o.storage)}
-	if o.storage == StorageSQLite {
-		storage.Config = map[string]string{"file": "/var/dex/dex.db"}
-	}
-
-	clients := make([]yamlClient, 0, len(o.clients))
-	for _, c := range o.clients {
-		clients = append(clients, yamlClient{
-			ID:           c.id,
-			Secret:       c.secret,
-			Name:         c.name,
-			Public:       c.public,
-			RedirectURIs: c.redirectURIs,
-			GrantTypes:   c.grantTypes,
-		})
-	}
-
-	passwords := make([]yamlPassword, 0, len(o.users))
-	for _, u := range o.users {
-		hash, err := bcrypt.GenerateFromPassword([]byte(u.password), testBcryptCost)
-		if err != nil {
-			return nil, fmt.Errorf("dex: bcrypt user %q: %w", u.email, err)
-		}
-		uid := u.userID
-		if uid == "" {
-			var uidErr error
-			uid, uidErr = newUUIDv4()
-			if uidErr != nil {
-				return nil, fmt.Errorf("dex: generate user id for %q: %w", u.email, uidErr)
-			}
-		}
-		passwords = append(passwords, yamlPassword{
-			Email:    u.email,
-			Hash:     string(hash),
-			Username: u.username,
-			UserID:   uid,
-		})
-	}
-
-	connectors := make([]yamlConnector, 0, len(o.connectors))
-	for _, c := range o.connectors {
-		connectors = append(connectors, yamlConnector{
-			Type: string(c.Type),
-			ID:   c.ID,
-			Name: c.Name,
-		})
-	}
-
-	grantTypes := append([]string(nil), baseGrantTypes...)
-	if o.enableClientCredentials {
-		grantTypes = append(grantTypes, "client_credentials")
-	}
-	oauth2 := oauth2Block{
-		SkipApprovalScreen: o.skipApprovalScreen,
-		GrantTypes:         grantTypes,
-	}
-	// Dex requires oauth2.passwordConnector to name the connector ID used for
-	// the password grant (ROPC). When the built-in password DB is active its
-	// synthetic connector ID is "local".
-	if o.enablePasswordDB {
-		oauth2.PasswordConnector = "local"
-	}
-
-	doc := dexYAML{
-		Issuer:           o.issuer,
-		Storage:          storage,
-		Web:              endpointBlock{HTTP: "0.0.0.0:5556"},
-		GRPC:             grpcBlock{Addr: "0.0.0.0:5557"},
-		Logger:           loggerBlock{Level: dexLogLevel(o.logLevel)},
-		OAuth2:           oauth2,
-		EnablePasswordDB: o.enablePasswordDB,
-		StaticClients:    clients,
-		StaticPasswords:  passwords,
-		Connectors:       connectors,
-	}
-
-	out, err := yaml.Marshal(doc)
-	if err != nil {
-		return nil, fmt.Errorf("dex: marshal yaml: %w", err)
-	}
-	return out, nil
-}
+// Dex requires oauth2.passwordConnector to name the connector ID used for
+// the password grant (ROPC). When the built-in password DB is active its
+// synthetic connector ID is "local".
 
 // dexLogLevel maps a standard library slog.Level to the string vocabulary
 // Dex recognises in its YAML `logger.level` field. Values between slog's
 // fixed levels round up to the next defined level (e.g. slog.LevelInfo+1
 // → "warn", slog.LevelWarn+1 → "error"); sub-debug values clamp to
 // "debug".
-func dexLogLevel(l slog.Level) string {
-	switch {
-	case l <= slog.LevelDebug:
-		return "debug"
-	case l <= slog.LevelInfo:
-		return "info"
-	case l <= slog.LevelWarn:
-		return "warn"
-	default:
-		return "error"
-	}
-}
+func dexLogLevel(l slog.Level) string { _ = "STUB: not implemented"; return "" }
 
 // newUUIDv4 generates an RFC 4122 v4 UUID without importing a third-party dep.
 // Returns an error from crypto/rand.Read rather than panicking so callers in
 // the container-startup and gRPC-admin paths can surface it up the chain.
-func newUUIDv4() (string, error) {
-	var b [16]byte
-	if _, err := rand.Read(b[:]); err != nil {
-		return "", fmt.Errorf("dex: read randomness: %w", err)
-	}
-	b[6] = (b[6] & 0x0f) | 0x40
-	b[8] = (b[8] & 0x3f) | 0x80
-	return fmt.Sprintf("%08x-%04x-%04x-%04x-%012x",
-		b[0:4], b[4:6], b[6:8], b[8:10], b[10:16]), nil
-}
+func newUUIDv4() (string, error) { _ = "STUB: not implemented"; return "", nil }

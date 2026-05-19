@@ -2,10 +2,8 @@ package cosmosdb
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
-	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos"
 )
@@ -18,28 +16,17 @@ type ContainerPolicy struct {
 }
 
 func NewContainerPolicy(ctx context.Context, c *Container) (*ContainerPolicy, error) {
-	endpoint, err := c.PortEndpoint(ctx, defaultPort, "")
-	if err != nil {
-		return nil, fmt.Errorf("port endpoint: %w", err)
-	}
-
-	return &ContainerPolicy{
-		endpoint: endpoint,
-	}, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (p *ContainerPolicy) Do(req *policy.Request) (*http.Response, error) {
-	req.Raw().Host = p.endpoint
-	req.Raw().URL.Host = p.endpoint
-
-	return req.Next()
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // ClientOptions returns Azure CosmosDB client options that contain ContainerPolicy.
 func (p *ContainerPolicy) ClientOptions() *azcosmos.ClientOptions {
-	return &azcosmos.ClientOptions{
-		ClientOptions: azcore.ClientOptions{
-			PerRetryPolicies: []policy.Policy{p},
-		},
-	}
+	_ = "STUB: not implemented"
+	return nil
 }

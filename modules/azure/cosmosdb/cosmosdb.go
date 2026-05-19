@@ -2,10 +2,8 @@ package cosmosdb
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const (
@@ -24,34 +22,12 @@ type Container struct {
 
 // Run creates an instance of the CosmosDB container type
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*Container, error) {
+	_ = "STUB: not implemented"
 	// Initialize with module defaults
-	moduleOpts := make([]testcontainers.ContainerCustomizer, 0, 3+len(opts))
-	moduleOpts = append(moduleOpts,
-		testcontainers.WithExposedPorts(defaultPort),
-		testcontainers.WithCmdArgs("--enable-explorer", "false"),
-		testcontainers.WithWaitStrategy(
-			wait.ForAll(
-				wait.ForLog("Started"),
-				wait.ForListeningPort(defaultPort),
-			),
-		),
-	)
-
-	// Add user-provided options
-	moduleOpts = append(moduleOpts, opts...)
-
-	ctr, err := testcontainers.Run(ctx, img, moduleOpts...)
-	var c *Container
-	if ctr != nil {
-		c = &Container{Container: ctr}
-	}
-
-	if err != nil {
-		return c, fmt.Errorf("run cosmosdb: %w", err)
-	}
-
-	return c, nil
+	return nil, nil
 }
+
+// Add user-provided options
 
 // ConnectionString returns a connection string that can be used to connect to the CosmosDB emulator.
 // The connection string includes the account endpoint (host:port) and the default test account key.
@@ -59,10 +35,6 @@ func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustom
 //
 // Format: "AccountEndpoint=<host>:<port>;AccountKey=<accountKey>"
 func (c *Container) ConnectionString(ctx context.Context) (string, error) {
-	endpoint, err := c.PortEndpoint(ctx, defaultPort, defaultProtocol)
-	if err != nil {
-		return "", fmt.Errorf("port endpoint: %w", err)
-	}
-
-	return fmt.Sprintf("AccountEndpoint=%s;AccountKey=%s;", endpoint, testAccKey), nil
+	_ = "STUB: not implemented"
+	return "", nil
 }

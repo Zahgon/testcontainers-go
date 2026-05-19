@@ -6,9 +6,7 @@ type Service struct {
 	ports          []string
 }
 
-func (s Service) hasQuota() bool {
-	return s.minimumQuotaMb > 0
-}
+func (s Service) hasQuota() bool { _ = "STUB: not implemented"; return false }
 
 var (
 	kv = Service{

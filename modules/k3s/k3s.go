@@ -2,18 +2,8 @@ package k3s
 
 import (
 	"context"
-	"fmt"
-	"io"
-	"os"
-	"path/filepath"
-
-	"github.com/moby/moby/api/types/container"
-	"github.com/moby/moby/api/types/mount"
-	"go.yaml.in/yaml/v3"
 
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/log"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const (
@@ -34,189 +24,59 @@ const k3sManifests = "/var/lib/rancher/k3s/server/manifests/"
 
 // WithManifest loads the manifest into the cluster. K3s applies it automatically during the startup process
 func WithManifest(manifestPath string) testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		manifest := filepath.Base(manifestPath)
-		target := k3sManifests + manifest
-
-		return testcontainers.WithFiles(testcontainers.ContainerFile{
-			HostFilePath:      manifestPath,
-			ContainerFilePath: target,
-		})(req)
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }
 
 // Deprecated: use Run instead
 // RunContainer creates an instance of the K3s container type
 func RunContainer(ctx context.Context, opts ...testcontainers.ContainerCustomizer) (*K3sContainer, error) {
-	return Run(ctx, "rancher/k3s:v1.27.1-k3s1", opts...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Run creates an instance of the K3s container type
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*K3sContainer, error) {
-	host, err := getContainerHost(ctx, opts...)
-	if err != nil {
-		return nil, err
-	}
-
-	moduleOpts := make([]testcontainers.ContainerCustomizer, 0, 5+len(opts))
-	moduleOpts = append(moduleOpts,
-		testcontainers.WithExposedPorts(defaultKubeSecurePort, defaultRancherWebhookPort),
-		testcontainers.WithHostConfigModifier(func(hc *container.HostConfig) {
-			hc.Privileged = true
-			hc.Tmpfs = map[string]string{
-				"/run":     "",
-				"/var/run": "",
-			}
-			hc.Mounts = []mount.Mount{}
-		}),
-		testcontainers.WithCmd(
-			"server",
-			"--disable=traefik",
-			"--tls-san="+host, // Host which will be used to access the Kubernetes server from tests.
-		),
-		testcontainers.WithEnv(map[string]string{
-			"K3S_KUBECONFIG_MODE": "644",
-		}),
-		testcontainers.WithWaitStrategy(wait.ForLog(".*Node controller sync successful.*").AsRegexp()),
-	)
-
-	moduleOpts = append(moduleOpts, opts...)
-
-	ctr, err := testcontainers.Run(ctx, img, moduleOpts...)
-	var c *K3sContainer
-	if ctr != nil {
-		c = &K3sContainer{Container: ctr}
-	}
-
-	if err != nil {
-		return c, fmt.Errorf("run k3s: %w", err)
-	}
-
-	return c, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// Host which will be used to access the Kubernetes server from tests.
 
 func getContainerHost(ctx context.Context, opts ...testcontainers.ContainerCustomizer) (string, error) {
+	_ = "STUB: not implemented"
 	// Use a dummy request to get the provider from options.
-	var req testcontainers.GenericContainerRequest
-	for _, opt := range opts {
-		if err := opt.Customize(&req); err != nil {
-			return "", err
-		}
-	}
-
-	logging := req.Logger
-	if logging == nil {
-		logging = log.Default()
-	}
-	p, err := req.ProviderType.GetProvider(testcontainers.WithLogger(logging))
-	if err != nil {
-		return "", err
-	}
-
-	if p, ok := p.(*testcontainers.DockerProvider); ok {
-		return p.DaemonHost(ctx)
-	}
-
-	// Fall back to localhost.
-	return "localhost", nil
+	return "", nil
 }
+
+// Fall back to localhost.
 
 // GetKubeConfig returns the modified kubeconfig with server url
 func (c *K3sContainer) GetKubeConfig(ctx context.Context) ([]byte, error) {
-	reader, err := c.CopyFileFromContainer(ctx, defaultKubeConfigK3sPath)
-	if err != nil {
-		return nil, fmt.Errorf("failed to copy file from container: %w", err)
-	}
-
-	kubeConfigYaml, err := io.ReadAll(reader)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file from container: %w", err)
-	}
-
-	server, err := c.PortEndpoint(ctx, defaultKubeSecurePort, "https")
-	if err != nil {
-		return nil, fmt.Errorf("failed to get port endpoint: %w", err)
-	}
-
-	newKubeConfig, err := kubeConfigWithServerURL(string(kubeConfigYaml), server)
-	if err != nil {
-		return nil, fmt.Errorf("failed to modify kubeconfig with server url: %w", err)
-	}
-
-	return newKubeConfig, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func kubeConfigWithServerURL(kubeConfigYaml, server string) ([]byte, error) {
-	kubeConfig, err := unmarshal([]byte(kubeConfigYaml))
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal kubeconfig: %w", err)
-	}
-
-	kubeConfig.Clusters[0].Cluster.Server = server
-	modifiedKubeConfig, err := marshal(kubeConfig)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal kubeconfig: %w", err)
-	}
-
-	return modifiedKubeConfig, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func marshal(config *KubeConfigValue) ([]byte, error) {
-	bytes, err := yaml.Marshal(config)
-	if err != nil {
-		return nil, err
-	}
-	return bytes, nil
-}
+func marshal(config *KubeConfigValue) ([]byte, error) { _ = "STUB: not implemented"; return nil, nil }
 
-func unmarshal(bytes []byte) (*KubeConfigValue, error) {
-	var kubeConfig KubeConfigValue
-	err := yaml.Unmarshal(bytes, &kubeConfig)
-	if err != nil {
-		return nil, err
-	}
-	return &kubeConfig, nil
-}
+func unmarshal(bytes []byte) (*KubeConfigValue, error) { _ = "STUB: not implemented"; return nil, nil }
 
 func (c *K3sContainer) LoadImages(ctx context.Context, images ...string) error {
-	return c.LoadImagesWithOpts(ctx, images)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *K3sContainer) LoadImagesWithOpts(ctx context.Context, images []string, opts ...testcontainers.SaveImageOption) error {
-	provider, err := testcontainers.ProviderDocker.GetProvider()
-	if err != nil {
-		return fmt.Errorf("getting docker provider %w", err)
-	}
-
-	// save image
-	imagesTar, err := os.CreateTemp(os.TempDir(), "images*.tar")
-	if err != nil {
-		return fmt.Errorf("creating temporary images file %w", err)
-	}
-	// Close the file handle immediately: SaveImages and CopyFileToContainer
-	// open the file by name.
-	if err = imagesTar.Close(); err != nil {
-		return fmt.Errorf("close temporary images file: %w", err)
-	}
-	defer func() {
-		_ = os.Remove(imagesTar.Name())
-	}()
-
-	err = provider.SaveImagesWithOpts(context.Background(), imagesTar.Name(), images, opts...)
-	if err != nil {
-		return fmt.Errorf("saving images %w", err)
-	}
-
-	containerPath := "/tmp/" + filepath.Base(imagesTar.Name())
-	err = c.CopyFileToContainer(ctx, imagesTar.Name(), containerPath, 0x644)
-	if err != nil {
-		return fmt.Errorf("copying image to container %w", err)
-	}
-
-	_, _, err = c.Exec(ctx, []string{"ctr", "-n=k8s.io", "images", "import", "--all-platforms", containerPath})
-	if err != nil {
-		return fmt.Errorf("importing image %w", err)
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
+
+// save image
+
+// Close the file handle immediately: SaveImages and CopyFileToContainer
+// open the file by name.

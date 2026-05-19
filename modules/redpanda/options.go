@@ -1,10 +1,6 @@
 package redpanda
 
 import (
-	"fmt"
-	"net"
-	"strconv"
-
 	"github.com/testcontainers/testcontainers-go"
 )
 
@@ -66,20 +62,7 @@ type options struct {
 	enableAdminAPIAuthentication bool
 }
 
-func defaultOptions() options {
-	return options{
-		Superusers:                         []string{},
-		KafkaEnableAuthorization:           false,
-		KafkaAuthenticationMethod:          "none",
-		SchemaRegistryAuthenticationMethod: "none",
-		HTTPProxyAuthenticationMethod:      HTTPProxyAuthMethodNone,
-		ServiceAccounts:                    make(map[string]string),
-		AutoCreateTopics:                   false,
-		EnableTLS:                          false,
-		Listeners:                          []listener{},
-		ExtraBootstrapConfig:               make(map[string]any),
-	}
-}
+func defaultOptions() options { _ = "STUB: not implemented"; return *new(options) }
 
 // Compiler check to ensure that Option implements the testcontainers.ContainerCustomizer interface.
 var _ testcontainers.ContainerCustomizer = (Option)(nil)
@@ -89,6 +72,7 @@ type Option func(*options) error
 
 // Customize is a NOOP. It's defined to satisfy the testcontainers.ContainerCustomizer interface.
 func (o Option) Customize(*testcontainers.GenericContainerRequest) error {
+	_ = "STUB: not implemented"
 	// NOOP to satisfy interface.
 	return nil
 }
@@ -97,135 +81,61 @@ func (o Option) Customize(*testcontainers.GenericContainerRequest) error {
 // that shall be created, so that you can use these to authenticate against
 // Redpanda (either for the Kafka API or Schema Registry HTTP access).
 func WithNewServiceAccount(username, password string) Option {
-	return func(o *options) error {
-		o.ServiceAccounts[username] = password
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(Option)
 }
 
 // WithSuperusers defines the superusers added to the redpanda config.
 // By default, there are no superusers.
-func WithSuperusers(superusers ...string) Option {
-	return func(o *options) error {
-		o.Superusers = superusers
-		return nil
-	}
-}
+func WithSuperusers(superusers ...string) Option { _ = "STUB: not implemented"; return *new(Option) }
 
 // WithEnableSASL enables SASL scram sha 256 authentication.
 // By default, no authentication (plaintext) is used.
 // When setting an authentication method, make sure to add users
 // as well as authorize them using the WithSuperusers() option.
-func WithEnableSASL() Option {
-	return func(o *options) error {
-		o.KafkaAuthenticationMethod = "sasl"
-		return nil
-	}
-}
+func WithEnableSASL() Option { _ = "STUB: not implemented"; return *new(Option) }
 
 // WithEnableKafkaAuthorization enables authorization for connections on the Kafka API.
-func WithEnableKafkaAuthorization() Option {
-	return func(o *options) error {
-		o.KafkaEnableAuthorization = true
-		return nil
-	}
-}
+func WithEnableKafkaAuthorization() Option { _ = "STUB: not implemented"; return *new(Option) }
 
 // WithEnableWasmTransform enables wasm transform.
 // Should not be used with RP versions before 23.3
-func WithEnableWasmTransform() Option {
-	return func(o *options) error {
-		o.EnableWasmTransform = true
-		return nil
-	}
-}
+func WithEnableWasmTransform() Option { _ = "STUB: not implemented"; return *new(Option) }
 
 // WithEnableSchemaRegistryHTTPBasicAuth enables HTTP basic authentication for
 // Schema Registry.
-func WithEnableSchemaRegistryHTTPBasicAuth() Option {
-	return func(o *options) error {
-		o.SchemaRegistryAuthenticationMethod = "http_basic"
-		return nil
-	}
-}
+func WithEnableSchemaRegistryHTTPBasicAuth() Option { _ = "STUB: not implemented"; return *new(Option) }
 
 // WithHTTPProxyAuthMethod sets the authentication method for HTTP Proxy.
 // If an invalid method is provided, it defaults to "none".
 func WithHTTPProxyAuthMethod(method HTTPProxyAuthMethod) Option {
-	switch method {
-	case HTTPProxyAuthMethodNone, HTTPProxyAuthMethodHTTPBasic, HTTPProxyAuthMethodOIDC:
-		return func(o *options) error {
-			o.HTTPProxyAuthenticationMethod = method
-			return nil
-		}
-	default:
-		return func(o *options) error {
-			// Invalid method, default to "none"
-			o.HTTPProxyAuthenticationMethod = HTTPProxyAuthMethodNone
-			return nil
-		}
-	}
+	_ = "STUB: not implemented"
+	return *new(Option)
 }
+
+// Invalid method, default to "none"
 
 // WithAutoCreateTopics enables topic auto creation.
-func WithAutoCreateTopics() Option {
-	return func(o *options) error {
-		o.AutoCreateTopics = true
-		return nil
-	}
-}
+func WithAutoCreateTopics() Option { _ = "STUB: not implemented"; return *new(Option) }
 
-func WithTLS(cert, key []byte) Option {
-	return func(o *options) error {
-		o.EnableTLS = true
-		o.cert = cert
-		o.key = key
-		return nil
-	}
-}
+func WithTLS(cert, key []byte) Option { _ = "STUB: not implemented"; return *new(Option) }
 
 // WithListener adds a custom listener to the Redpanda containers. Listener
 // will be aliases to all networks, so they can be accessed from within docker
 // networks. At least one network must be attached to the container, if not an
 // error will be thrown when starting the container.
-func WithListener(lis string) Option {
-	return func(o *options) error {
-		host, port, err := net.SplitHostPort(lis)
-		if err != nil {
-			return fmt.Errorf("split host port: %w", err)
-		}
-
-		portInt, err := strconv.Atoi(port)
-		if err != nil {
-			return fmt.Errorf("parse port: %w", err)
-		}
-
-		o.Listeners = append(o.Listeners, listener{
-			Address:              host,
-			Port:                 portInt,
-			AuthenticationMethod: o.KafkaAuthenticationMethod,
-		})
-		return nil
-	}
-}
+func WithListener(lis string) Option { _ = "STUB: not implemented"; return *new(Option) }
 
 // WithBootstrapConfig adds an arbitrary config kvp to the Redpanda container.
 // Per the name, this config will be interpolated into the generated bootstrap
 // config file, which is particularly useful for configs requiring a restart
 // when otherwise applied to a running Redpanda instance.
 func WithBootstrapConfig(cfg string, val any) Option {
-	return func(o *options) error {
-		o.ExtraBootstrapConfig[cfg] = val
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(Option)
 }
 
 // WithAdminAPIAuthentication enables Admin API Authentication.
 // It sets `admin_api_require_auth` configuration to true and configures a bootstrap user account.
 // See https://docs.redpanda.com/current/deploy/deployment-option/self-hosted/manual/production/production-deployment/#bootstrap-a-user-account
-func WithAdminAPIAuthentication() Option {
-	return func(o *options) error {
-		o.enableAdminAPIAuthentication = true
-		return nil
-	}
-}
+func WithAdminAPIAuthentication() Option { _ = "STUB: not implemented"; return *new(Option) }

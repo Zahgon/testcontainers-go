@@ -17,13 +17,6 @@ type TestcontainersConfig struct {
 // ReadConfig reads from testcontainers properties file, storing the result in a singleton instance
 // of the TestcontainersConfig struct
 func ReadConfig() TestcontainersConfig {
-	cfg := config.Read()
-	return TestcontainersConfig{
-		Host:           cfg.Host,
-		TLSVerify:      cfg.TLSVerify,
-		CertPath:       cfg.CertPath,
-		RyukDisabled:   cfg.RyukDisabled,
-		RyukPrivileged: cfg.RyukPrivileged,
-		Config:         cfg,
-	}
+	_ = "STUB: not implemented"
+	return *new(TestcontainersConfig)
 }

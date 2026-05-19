@@ -1,9 +1,7 @@
 package bigquery
 
 import (
-	"errors"
 	"io"
-	"slices"
 
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/gcloud/internal/shared"
@@ -16,9 +14,7 @@ type options = shared.Options
 type Option = shared.Option
 
 // defaultOptions returns a new Options instance with the default project ID.
-func defaultOptions() options {
-	return shared.DefaultOptions()
-}
+func defaultOptions() options { _ = "STUB: not implemented"; return *new(options) }
 
 // WithProjectID re-exports the common GCloud WithProjectID option
 var WithProjectID = shared.WithProjectID
@@ -29,19 +25,6 @@ var WithProjectID = shared.WithProjectID
 //
 // Other GCloud containers will ignore this option.
 func WithDataYAML(r io.Reader) testcontainers.CustomizeRequestOption {
-	return func(req *testcontainers.GenericContainerRequest) error {
-		if slices.Contains(req.Cmd, "--data-from-yaml") {
-			return errors.New("data yaml already exists")
-		}
-
-		if err := testcontainers.WithCmdArgs("--data-from-yaml", bigQueryDataYamlPath)(req); err != nil {
-			return err
-		}
-
-		return testcontainers.WithFiles(testcontainers.ContainerFile{
-			Reader:            r,
-			ContainerFilePath: bigQueryDataYamlPath,
-			FileMode:          0o644,
-		})(req)
-	}
+	_ = "STUB: not implemented"
+	return *new(testcontainers.CustomizeRequestOption)
 }

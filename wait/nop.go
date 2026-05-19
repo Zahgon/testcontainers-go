@@ -24,27 +24,27 @@ type NopStrategy struct {
 func ForNop(
 	waitUntilReady func(context.Context, StrategyTarget) error,
 ) *NopStrategy {
-	return &NopStrategy{
-		waitUntilReady: waitUntilReady,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (ws *NopStrategy) Timeout() *time.Duration {
-	return ws.timeout
+	_ = "STUB: not implemented"
+
+	// String returns a human-readable description of the wait strategy.
+	return nil
 }
 
-// String returns a human-readable description of the wait strategy.
-func (ws *NopStrategy) String() string {
-	return "custom wait condition"
-}
+func (ws *NopStrategy) String() string { _ = "STUB: not implemented"; return "" }
 
 func (ws *NopStrategy) WithStartupTimeout(timeout time.Duration) *NopStrategy {
-	ws.timeout = &timeout
-	return ws
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (ws *NopStrategy) WaitUntilReady(ctx context.Context, target StrategyTarget) error {
-	return ws.waitUntilReady(ctx, target)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type NopStrategyTarget struct {
@@ -53,37 +53,43 @@ type NopStrategyTarget struct {
 }
 
 func (st NopStrategyTarget) Host(_ context.Context) (string, error) {
+	_ = "STUB: not implemented"
 	return "", nil
 }
 
 func (st NopStrategyTarget) Inspect(_ context.Context) (*container.InspectResponse, error) {
+	_ = "STUB: not implemented"
+
+	// Deprecated: use Inspect instead
 	return nil, nil
 }
 
-// Deprecated: use Inspect instead
 func (st NopStrategyTarget) Ports(_ context.Context) (network.PortMap, error) {
-	return nil, nil
+	_ = "STUB: not implemented"
+	return *new(network.PortMap), nil
 }
 
 func (st NopStrategyTarget) MappedPort(_ context.Context, n string) (network.Port, error) {
-	if n == "" {
-		return network.Port{}, nil
-	}
-	return network.ParsePort(n)
+	_ = "STUB: not implemented"
+	return *new(network.Port), nil
 }
 
 func (st NopStrategyTarget) Logs(_ context.Context) (io.ReadCloser, error) {
-	return st.ReaderCloser, nil
+	_ = "STUB: not implemented"
+	return *new(io.ReadCloser), nil
 }
 
 func (st NopStrategyTarget) Exec(_ context.Context, _ []string, _ ...exec.ProcessOption) (int, io.Reader, error) {
-	return 0, nil, nil
+	_ = "STUB: not implemented"
+	return 0, *new(io.Reader), nil
 }
 
 func (st NopStrategyTarget) State(_ context.Context) (*container.State, error) {
-	return &st.ContainerState, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (st NopStrategyTarget) CopyFileFromContainer(context.Context, string) (io.ReadCloser, error) {
-	return st.ReaderCloser, nil
+	_ = "STUB: not implemented"
+	return *new(io.ReadCloser), nil
 }

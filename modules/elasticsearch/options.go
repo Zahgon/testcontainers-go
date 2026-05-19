@@ -14,11 +14,7 @@ type Options struct {
 	Username string
 }
 
-func defaultOptions() *Options {
-	return &Options{
-		Username: defaultUsername,
-	}
-}
+func defaultOptions() *Options { _ = "STUB: not implemented"; return nil }
 
 // Compiler check to ensure that Option implements the testcontainers.ContainerCustomizer interface.
 var _ testcontainers.ContainerCustomizer = (*Option)(nil)
@@ -28,14 +24,10 @@ type Option func(*Options) error
 
 // Customize is a NOOP. It's defined to satisfy the testcontainers.ContainerCustomizer interface.
 func (o Option) Customize(*testcontainers.GenericContainerRequest) error {
+	_ = "STUB: not implemented"
 	// NOOP to satisfy interface.
 	return nil
 }
 
 // WithPassword sets the password for the Elasticsearch container.
-func WithPassword(password string) Option {
-	return func(o *Options) error {
-		o.Password = password
-		return nil
-	}
-}
+func WithPassword(password string) Option { _ = "STUB: not implemented"; return *new(Option) }

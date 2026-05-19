@@ -2,12 +2,8 @@ package testcontainers
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
-	"reflect"
-	"strings"
-	"time"
 
 	"github.com/moby/moby/api/types/container"
 	"github.com/moby/moby/api/types/network"
@@ -242,310 +238,187 @@ var defaultReadinessHook = func() ContainerLifecycleHooks {
 
 // buildingHook is a hook that will be called before a container image is built.
 func (req ContainerRequest) buildingHook(ctx context.Context) error {
-	return req.applyLifecycleHooks(func(lifecycleHooks ContainerLifecycleHooks) error {
-		return lifecycleHooks.Building(ctx)(req)
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // builtHook is a hook that will be called after a container image is built.
 func (req ContainerRequest) builtHook(ctx context.Context) error {
-	return req.applyLifecycleHooks(func(lifecycleHooks ContainerLifecycleHooks) error {
-		return lifecycleHooks.Built(ctx)(req)
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // creatingHook is a hook that will be called before a container is created.
 func (req ContainerRequest) creatingHook(ctx context.Context) error {
-	return req.applyLifecycleHooks(func(lifecycleHooks ContainerLifecycleHooks) error {
-		return lifecycleHooks.Creating(ctx)(req)
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // applyLifecycleHooks calls hook on all LifecycleHooks.
 func (req ContainerRequest) applyLifecycleHooks(hook func(lifecycleHooks ContainerLifecycleHooks) error) error {
-	var errs []error
-	for _, lifecycleHooks := range req.LifecycleHooks {
-		if err := hook(lifecycleHooks); err != nil {
-			errs = append(errs, err)
-		}
-	}
-
-	return errors.Join(errs...)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // createdHook is a hook that will be called after a container is created.
 func (c *DockerContainer) createdHook(ctx context.Context) error {
-	return c.applyLifecycleHooks(ctx, false, func(lifecycleHooks ContainerLifecycleHooks) []ContainerHook {
-		return lifecycleHooks.PostCreates
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // startingHook is a hook that will be called before a container is started.
 func (c *DockerContainer) startingHook(ctx context.Context) error {
-	return c.applyLifecycleHooks(ctx, true, func(lifecycleHooks ContainerLifecycleHooks) []ContainerHook {
-		return lifecycleHooks.PreStarts
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // startedHook is a hook that will be called after a container is started.
 func (c *DockerContainer) startedHook(ctx context.Context) error {
-	return c.applyLifecycleHooks(ctx, true, func(lifecycleHooks ContainerLifecycleHooks) []ContainerHook {
-		return lifecycleHooks.PostStarts
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // readiedHook is a hook that will be called after a container is ready.
 func (c *DockerContainer) readiedHook(ctx context.Context) error {
-	return c.applyLifecycleHooks(ctx, true, func(lifecycleHooks ContainerLifecycleHooks) []ContainerHook {
-		return lifecycleHooks.PostReadies
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // printLogs is a helper function that will print the logs of a Docker container
 // We are going to use this helper function to inform the user of the logs when an error occurs
 func (c *DockerContainer) printLogs(ctx context.Context, cause error) {
-	reader, err := c.Logs(ctx)
-	if err != nil {
-		c.logger.Printf("failed accessing container logs: %v\n", err)
-		return
-	}
-
-	b, err := io.ReadAll(reader)
-	if err != nil {
-		if len(b) > 0 {
-			c.logger.Printf("failed reading container logs: %v\npartial container logs (%s):\n%s", err, cause, b)
-		} else {
-			c.logger.Printf("failed reading container logs: %v\n", err)
-		}
-		return
-	}
-
-	c.logger.Printf("container logs (%s):\n%s", cause, b)
+	_ = "STUB: not implemented"
+	return
 }
 
 // stoppingHook is a hook that will be called before a container is stopped.
 func (c *DockerContainer) stoppingHook(ctx context.Context) error {
-	return c.applyLifecycleHooks(ctx, false, func(lifecycleHooks ContainerLifecycleHooks) []ContainerHook {
-		return lifecycleHooks.PreStops
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // stoppedHook is a hook that will be called after a container is stopped.
 func (c *DockerContainer) stoppedHook(ctx context.Context) error {
-	return c.applyLifecycleHooks(ctx, false, func(lifecycleHooks ContainerLifecycleHooks) []ContainerHook {
-		return lifecycleHooks.PostStops
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // terminatingHook is a hook that will be called before a container is terminated.
 func (c *DockerContainer) terminatingHook(ctx context.Context) error {
-	return c.applyLifecycleHooks(ctx, false, func(lifecycleHooks ContainerLifecycleHooks) []ContainerHook {
-		return lifecycleHooks.PreTerminates
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // terminatedHook is a hook that will be called after a container is terminated.
 func (c *DockerContainer) terminatedHook(ctx context.Context) error {
-	return c.applyLifecycleHooks(ctx, false, func(lifecycleHooks ContainerLifecycleHooks) []ContainerHook {
-		return lifecycleHooks.PostTerminates
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // applyLifecycleHooks applies all lifecycle hooks reporting the container logs on error if logError is true.
 func (c *DockerContainer) applyLifecycleHooks(ctx context.Context, logError bool, hooks func(lifecycleHooks ContainerLifecycleHooks) []ContainerHook) error {
-	var errs []error
-	for _, lifecycleHooks := range c.lifecycleHooks {
-		if err := containerHookFn(ctx, hooks(lifecycleHooks))(c); err != nil {
-			errs = append(errs, err)
-		}
-	}
+	_ = "STUB: not implemented"
+	return nil
+}
 
-	if err := errors.Join(errs...); err != nil {
-		if logError {
-			select {
-			case <-ctx.Done():
-				// Context has timed out so need a new context to get logs.
-				ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-				defer cancel()
-				c.printLogs(ctx, err)
-			default:
-				c.printLogs(ctx, err)
-			}
-		}
+// Context has timed out so need a new context to get logs.
 
-		return err
-	}
-
+// Building is a hook that will be called before a container image is built.
+func (c ContainerLifecycleHooks) Building(ctx context.Context) func(req ContainerRequest) error {
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // Building is a hook that will be called before a container image is built.
-func (c ContainerLifecycleHooks) Building(ctx context.Context) func(req ContainerRequest) error {
-	return containerRequestHook(ctx, c.PreBuilds)
-}
-
-// Building is a hook that will be called before a container image is built.
 func (c ContainerLifecycleHooks) Built(ctx context.Context) func(req ContainerRequest) error {
-	return containerRequestHook(ctx, c.PostBuilds)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Creating is a hook that will be called before a container is created.
 func (c ContainerLifecycleHooks) Creating(ctx context.Context) func(req ContainerRequest) error {
-	return containerRequestHook(ctx, c.PreCreates)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // containerRequestHook returns a function that will iterate over all
 // the hooks and call them one by one until there is an error.
 func containerRequestHook(ctx context.Context, hooks []ContainerRequestHook) func(req ContainerRequest) error {
-	return func(req ContainerRequest) error {
-		for _, hook := range hooks {
-			if err := hook(ctx, req); err != nil {
-				return err
-			}
-		}
-
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // containerHookFn is a helper function that will create a function to be returned by all the different
 // container lifecycle hooks. The created function will iterate over all the hooks and call them one by one.
 func containerHookFn(ctx context.Context, containerHook []ContainerHook) func(container Container) error {
-	return func(ctr Container) error {
-		var errs []error
-		for _, hook := range containerHook {
-			if err := hook(ctx, ctr); err != nil {
-				errs = append(errs, err)
-			}
-		}
-
-		return errors.Join(errs...)
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Created is a hook that will be called after a container is created
 func (c ContainerLifecycleHooks) Created(ctx context.Context) func(container Container) error {
-	return containerHookFn(ctx, c.PostCreates)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Starting is a hook that will be called before a container is started
 func (c ContainerLifecycleHooks) Starting(ctx context.Context) func(container Container) error {
-	return containerHookFn(ctx, c.PreStarts)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Started is a hook that will be called after a container is started
 func (c ContainerLifecycleHooks) Started(ctx context.Context) func(container Container) error {
-	return containerHookFn(ctx, c.PostStarts)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Readied is a hook that will be called after a container is ready
 func (c ContainerLifecycleHooks) Readied(ctx context.Context) func(container Container) error {
-	return containerHookFn(ctx, c.PostReadies)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Stopping is a hook that will be called before a container is stopped
 func (c ContainerLifecycleHooks) Stopping(ctx context.Context) func(container Container) error {
-	return containerHookFn(ctx, c.PreStops)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Stopped is a hook that will be called after a container is stopped
 func (c ContainerLifecycleHooks) Stopped(ctx context.Context) func(container Container) error {
-	return containerHookFn(ctx, c.PostStops)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Terminating is a hook that will be called before a container is terminated
 func (c ContainerLifecycleHooks) Terminating(ctx context.Context) func(container Container) error {
-	return containerHookFn(ctx, c.PreTerminates)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Terminated is a hook that will be called after a container is terminated
 func (c ContainerLifecycleHooks) Terminated(ctx context.Context) func(container Container) error {
-	return containerHookFn(ctx, c.PostTerminates)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (p *DockerProvider) preCreateContainerHook(ctx context.Context, req ContainerRequest, dockerInput *container.Config, hostConfig *container.HostConfig, networkingConfig *network.NetworkingConfig) error {
-	var mountErrors []error
-	for _, m := range req.Mounts {
-		// validate only the mount sources that implement the Validator interface
-		if v, ok := m.Source.(Validator); ok {
-			if err := v.Validate(); err != nil {
-				mountErrors = append(mountErrors, err)
-			}
-		}
-	}
-
-	if len(mountErrors) > 0 {
-		return errors.Join(mountErrors...)
-	}
-
-	// prepare mounts
-	hostConfig.Mounts = mapToDockerMounts(req.Mounts)
-
-	endpointSettings := map[string]*network.EndpointSettings{}
-
-	// #248: Docker allows only one network to be specified during container creation
-	// If there is more than one network specified in the request container should be attached to them
-	// once it is created. We will take a first network if any specified in the request and use it to create container
-	if len(req.Networks) > 0 {
-		attachContainerTo := req.Networks[0]
-
-		nw, err := p.GetNetwork(ctx, NetworkRequest{
-			Name: attachContainerTo,
-		})
-		if err == nil {
-			aliases := []string{}
-			if _, ok := req.NetworkAliases[attachContainerTo]; ok {
-				aliases = req.NetworkAliases[attachContainerTo]
-			}
-			endpointSetting := network.EndpointSettings{
-				Aliases:   aliases,
-				NetworkID: nw.ID,
-			}
-			endpointSettings[attachContainerTo] = &endpointSetting
-		}
-	}
-
-	if req.ConfigModifier == nil {
-		req.ConfigModifier = defaultConfigModifier(req)
-	}
-	req.ConfigModifier(dockerInput)
-
-	if req.HostConfigModifier == nil {
-		req.HostConfigModifier = defaultHostConfigModifier(req)
-	}
-	req.HostConfigModifier(hostConfig)
-
-	if req.EndpointSettingsModifier != nil {
-		req.EndpointSettingsModifier(endpointSettings)
-	}
-
-	networkingConfig.EndpointsConfig = endpointSettings
-
-	// Expose ports automatically if the container request exposes zero ports and the container
-	// does not run in a container network. The NetworkMode check must be done after the pre-creation
-	// Modifiers are called, so the network mode is already set.
-	exposedPorts := req.ExposedPorts
-	if len(exposedPorts) == 0 && !hostConfig.NetworkMode.IsContainer() {
-		image, err := p.client.ImageInspect(ctx, dockerInput.Image)
-		if err != nil {
-			return err
-		}
-
-		exposedPorts = exposedPorts[:0]
-		for port := range image.Config.ExposedPorts {
-			exposedPorts = append(exposedPorts, port)
-		}
-	}
-
-	exposedPortSet, err := parseExposedPorts(exposedPorts)
-	if err != nil {
-		return err
-	}
-
-	dockerInput.ExposedPorts = exposedPortSet
-	hostConfig.PortBindings = mergePortBindings(hostConfig.PortBindings, exposedPortSet)
+	_ = "STUB: not implemented"
 	return nil
 }
+
+// validate only the mount sources that implement the Validator interface
+
+// prepare mounts
+
+// #248: Docker allows only one network to be specified during container creation
+// If there is more than one network specified in the request container should be attached to them
+// once it is created. We will take a first network if any specified in the request and use it to create container
+
+// Expose ports automatically if the container request exposes zero ports and the container
+// does not run in a container network. The NetworkMode check must be done after the pre-creation
+// Modifiers are called, so the network mode is already set.
 
 // combineContainerHooks returns a ContainerLifecycle hook as the result
 // of combining the default hooks with the user-defined hooks.
@@ -554,58 +427,20 @@ func (p *DockerProvider) preCreateContainerHook(ctx context.Context, req Contain
 // - Pre-hooks run the default hooks first then the user-defined hooks
 // - Post-hooks run the user-defined hooks first then the default hooks
 func combineContainerHooks(defaultHooks, userDefinedHooks []ContainerLifecycleHooks) ContainerLifecycleHooks {
+	_ = "STUB: not implemented"
 	// We use reflection here to ensure that any new hooks are handled.
-	var hooks ContainerLifecycleHooks
-	hooksVal := reflect.ValueOf(&hooks).Elem()
-	hooksType := reflect.TypeOf(hooks)
-	for _, defaultHook := range defaultHooks {
-		defaultVal := reflect.ValueOf(defaultHook)
-		for i := range hooksType.NumField() {
-			if strings.HasPrefix(hooksType.Field(i).Name, "Pre") {
-				field := hooksVal.Field(i)
-				field.Set(reflect.AppendSlice(field, defaultVal.Field(i)))
-			}
-		}
-	}
-
-	// Append the user-defined hooks after the default pre-hooks
-	// and because the post hooks are still empty, the user-defined
-	// post-hooks will be the first ones to be executed.
-	for _, userDefinedHook := range userDefinedHooks {
-		userVal := reflect.ValueOf(userDefinedHook)
-		for i := range hooksType.NumField() {
-			field := hooksVal.Field(i)
-			field.Set(reflect.AppendSlice(field, userVal.Field(i)))
-		}
-	}
-
-	// Finally, append the default post-hooks.
-	for _, defaultHook := range defaultHooks {
-		defaultVal := reflect.ValueOf(defaultHook)
-		for i := range hooksType.NumField() {
-			if strings.HasPrefix(hooksType.Field(i).Name, "Post") {
-				field := hooksVal.Field(i)
-				field.Set(reflect.AppendSlice(field, defaultVal.Field(i)))
-			}
-		}
-	}
-
-	return hooks
+	return *new(ContainerLifecycleHooks)
 }
 
-func parseExposedPorts(specs []string) (network.PortSet, error) {
-	exposed := make(network.PortSet, len(specs))
-	for _, s := range specs {
-		pr, err := network.ParsePortRange(s)
-		if err != nil {
-			return nil, fmt.Errorf("invalid exposed port %q: %w", s, err)
-		}
+// Append the user-defined hooks after the default pre-hooks
+// and because the post hooks are still empty, the user-defined
+// post-hooks will be the first ones to be executed.
 
-		for p := range pr.All() {
-			exposed[p] = struct{}{}
-		}
-	}
-	return exposed, nil
+// Finally, append the default post-hooks.
+
+func parseExposedPorts(specs []string) (network.PortSet, error) {
+	_ = "STUB: not implemented"
+	return *new(network.PortSet), nil
 }
 
 // mergePortBindings returns a PortMap for the given exposedPortSet.
@@ -624,51 +459,23 @@ func parseExposedPorts(specs []string) (network.PortSet, error) {
 // ExposedPorts). The logic here is the reverse; any port "mapped" in
 // HostConfig.PortBindings is dropped if is not exposed.
 func mergePortBindings(configPortMap network.PortMap, exposedPortSet network.PortSet) network.PortMap {
-	if len(exposedPortSet) == 0 {
-		return network.PortMap{}
-	}
-
-	exposedPortMap := make(network.PortMap, len(exposedPortSet))
-	for p := range exposedPortSet {
-		bindings := configPortMap[p]
-		if len(bindings) == 0 {
-			exposedPortMap[p] = []network.PortBinding{{HostPort: "0"}}
-			continue
-		}
-
-		// Fix: Ensure that ports with empty HostPort get "0" for automatic allocation
-		// This fixes the UDP port binding issue where ports were getting HostPort:0 instead of being allocated
-		for i := range bindings {
-			if bindings[i].HostPort == "" {
-				bindings[i].HostPort = "0" // Tell Docker to allocate a random port
-			}
-		}
-		exposedPortMap[p] = bindings
-	}
-
-	return exposedPortMap
+	_ = "STUB: not implemented"
+	return *new(network.PortMap)
 }
+
+// Fix: Ensure that ports with empty HostPort get "0" for automatic allocation
+// This fixes the UDP port binding issue where ports were getting HostPort:0 instead of being allocated
+
+// Tell Docker to allocate a random port
 
 // defaultHostConfigModifier provides a default modifier including the deprecated fields
 func defaultConfigModifier(req ContainerRequest) func(config *container.Config) {
-	return func(config *container.Config) {
-		config.Hostname = req.Hostname
-		config.WorkingDir = req.WorkingDir
-		config.User = req.User
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // defaultHostConfigModifier provides a default modifier including the deprecated fields
 func defaultHostConfigModifier(req ContainerRequest) func(hostConfig *container.HostConfig) {
-	return func(hostConfig *container.HostConfig) {
-		hostConfig.AutoRemove = req.AutoRemove
-		hostConfig.CapAdd = req.CapAdd
-		hostConfig.CapDrop = req.CapDrop
-		hostConfig.Binds = req.Binds
-		hostConfig.ExtraHosts = req.ExtraHosts
-		hostConfig.NetworkMode = req.NetworkMode
-		hostConfig.Resources = req.Resources
-		hostConfig.Privileged = req.Privileged
-		hostConfig.ShmSize = req.ShmSize
-	}
+	_ = "STUB: not implemented"
+	return nil
 }

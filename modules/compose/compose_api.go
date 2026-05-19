@@ -2,23 +2,14 @@ package compose
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"io"
-	"os"
-	"path/filepath"
-	"sort"
-	"strconv"
-	"strings"
 	"sync"
-	"time"
 
 	"github.com/compose-spec/compose-go/v2/cli"
 	"github.com/compose-spec/compose-go/v2/types"
 	"github.com/docker/cli/cli/command"
 	"github.com/docker/compose/v5/pkg/api"
 	"github.com/moby/moby/client"
-	"golang.org/x/sync/errgroup"
 
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/log"
@@ -28,15 +19,16 @@ import (
 type stackUpOptionFunc func(s *stackUpOptions)
 
 func (f stackUpOptionFunc) applyToStackUp(o *stackUpOptions) {
-	f(o)
+	_ = "STUB: not implemented"
+
+	// RunServices is comparable to 'docker compose run' as it only creates a subset of containers
+	// instead of all services defined by the project
+	return
 }
 
-// RunServices is comparable to 'docker compose run' as it only creates a subset of containers
-// instead of all services defined by the project
 func RunServices(serviceNames ...string) StackUpOption {
-	return stackUpOptionFunc(func(o *stackUpOptions) {
-		o.Services = serviceNames
-	})
+	_ = "STUB: not implemented"
+	return *new(StackUpOption)
 }
 
 // Deprecated: will be removed in the next major release
@@ -47,128 +39,74 @@ type IgnoreOrphans bool
 //
 //nolint:unused
 func (io IgnoreOrphans) applyToStackUp(co *api.CreateOptions, _ *api.StartOptions) {
-	co.IgnoreOrphans = bool(io)
+	_ = "STUB: not implemented"
+	return
 }
 
 // Recreate will recreate the containers that are already running
 type Recreate string
 
-func (r Recreate) applyToStackUp(o *stackUpOptions) {
-	o.Recreate = validateRecreate(string(r))
-}
+func (r Recreate) applyToStackUp(o *stackUpOptions) { _ = "STUB: not implemented"; return }
 
 // RecreateDependencies will recreate the dependencies of the services that are already running
 type RecreateDependencies string
 
-func (r RecreateDependencies) applyToStackUp(o *stackUpOptions) {
-	o.RecreateDependencies = validateRecreate(string(r))
-}
+func (r RecreateDependencies) applyToStackUp(o *stackUpOptions) { _ = "STUB: not implemented"; return }
 
-func validateRecreate(r string) string {
-	switch r {
-	case api.RecreateDiverged, api.RecreateForce, api.RecreateNever:
-		return r
-	default:
-		return api.RecreateForce
-	}
-}
+func validateRecreate(r string) string { _ = "STUB: not implemented"; return "" }
 
 // RemoveOrphans will clean up containers that are not declared on the compose model but own the same labels
 type RemoveOrphans bool
 
-func (ro RemoveOrphans) applyToStackUp(o *stackUpOptions) {
-	o.RemoveOrphans = bool(ro)
-}
+func (ro RemoveOrphans) applyToStackUp(o *stackUpOptions) { _ = "STUB: not implemented"; return }
 
-func (ro RemoveOrphans) applyToStackDown(o *stackDownOptions) {
-	o.RemoveOrphans = bool(ro)
-}
+func (ro RemoveOrphans) applyToStackDown(o *stackDownOptions) { _ = "STUB: not implemented"; return }
 
 // Wait won't return until containers reached the running|healthy state
 type Wait bool
 
-func (w Wait) applyToStackUp(o *stackUpOptions) {
-	o.Wait = bool(w)
-}
+func (w Wait) applyToStackUp(o *stackUpOptions) { _ = "STUB: not implemented"; return }
 
 type RemoveVolumes bool
 
-func (ro RemoveVolumes) applyToStackDown(o *stackDownOptions) {
-	o.Volumes = bool(ro)
-}
+func (ro RemoveVolumes) applyToStackDown(o *stackDownOptions) { _ = "STUB: not implemented"; return }
 
 // RemoveImages used by services
 type RemoveImages uint8
 
-func (ri RemoveImages) applyToStackDown(o *stackDownOptions) {
-	switch ri {
-	case RemoveImagesAll:
-		o.Images = "all"
-	case RemoveImagesLocal:
-		o.Images = "local"
-	}
-}
+func (ri RemoveImages) applyToStackDown(o *stackDownOptions) { _ = "STUB: not implemented"; return }
 
 type ComposeStackReaders []io.Reader
 
 func (r ComposeStackReaders) applyToComposeStack(o *composeStackOptions) error {
-	f := make([]string, len(r))
-	baseName := "docker-compose-%d.yml"
-	for i, reader := range r {
-		tmp := os.TempDir()
-		tmp = filepath.Join(tmp, strconv.FormatInt(time.Now().UnixNano(), 10))
-		err := os.MkdirAll(tmp, 0o755)
-		if err != nil {
-			return fmt.Errorf("create temporary directory: %w", err)
-		}
-
-		name := fmt.Sprintf(baseName, i)
-
-		bs, err := io.ReadAll(reader)
-		if err != nil {
-			return fmt.Errorf("read from reader: %w", err)
-		}
-
-		err = os.WriteFile(filepath.Join(tmp, name), bs, 0o644)
-		if err != nil {
-			return fmt.Errorf("write to temporary file: %w", err)
-		}
-
-		f[i] = filepath.Join(tmp, name)
-
-		// mark the file for removal as it was generated on the fly
-		o.temporaryPaths[f[i]] = true
-	}
-
-	o.Paths = append(o.Paths, f...)
-
+	_ = "STUB: not implemented"
 	return nil
 }
+
+// mark the file for removal as it was generated on the fly
 
 type ComposeStackFiles []string
 
 func (f ComposeStackFiles) applyToComposeStack(o *composeStackOptions) error {
-	o.Paths = append(o.Paths, f...)
+	_ = "STUB: not implemented"
 	return nil
 }
 
 type ComposeProfiles []string
 
 func (p ComposeProfiles) applyToComposeStack(o *composeStackOptions) error {
-	o.Profiles = append(o.Profiles, p...)
+	_ = "STUB: not implemented"
 	return nil
 }
 
 type StackIdentifier string
 
 func (f StackIdentifier) applyToComposeStack(o *composeStackOptions) error {
-	o.Identifier = string(f)
+	_ = "STUB: not implemented"
 	return nil
 }
 
-func (f StackIdentifier) String() string {
-	return string(f)
-}
+func (f StackIdentifier) String() string { _ = "STUB: not implemented"; return "" }
 
 const (
 	// RemoveImagesAll - remove all images used by the stack
@@ -237,377 +175,94 @@ type DockerCompose struct {
 }
 
 func (d *DockerCompose) ServiceContainer(ctx context.Context, svcName string) (*testcontainers.DockerContainer, error) {
-	d.lock.Lock()
-	defer d.lock.Unlock()
-
-	return d.lookupContainer(ctx, svcName)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (d *DockerCompose) Services() []string {
-	d.lock.Lock()
-	defer d.lock.Unlock()
-
-	return d.project.ServiceNames()
-}
+func (d *DockerCompose) Services() []string { _ = "STUB: not implemented"; return nil }
 
 func (d *DockerCompose) Down(ctx context.Context, opts ...StackDownOption) error {
-	d.lock.Lock()
-	defer d.lock.Unlock()
-
-	options := stackDownOptions{
-		DownOptions: api.DownOptions{
-			Project: d.project,
-		},
-	}
-
-	for i := range opts {
-		opts[i].applyToStackDown(&options)
-	}
-	defer func() {
-		for cfg := range d.temporaryConfigs {
-			_ = os.Remove(cfg)
-		}
-	}()
-
-	return d.composeService.Down(ctx, d.name, options.DownOptions)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Close releases the HTTP transport connections held by the internal Docker CLI
 // and the testcontainers Docker client, preventing net/http persistConn goroutine
 // leaks. Call Close after Down when the compose stack will no longer be used.
-func (d *DockerCompose) Close() error {
-	d.lock.Lock()
-	defer d.lock.Unlock()
-
-	var errs []error
-
-	if d.dockerCli != nil {
-		if cli := d.dockerCli.Client(); cli != nil {
-			if err := cli.Close(); err != nil {
-				errs = append(errs, fmt.Errorf("close docker cli client: %w", err))
-			}
-		}
-		d.dockerCli = nil
-	}
-
-	if d.dockerClient != nil {
-		if err := d.dockerClient.Close(); err != nil {
-			errs = append(errs, fmt.Errorf("close docker client: %w", err))
-		}
-		d.dockerClient = nil
-	}
-
-	return errors.Join(errs...)
-}
+func (d *DockerCompose) Close() error { _ = "STUB: not implemented"; return nil }
 
 func (d *DockerCompose) Up(ctx context.Context, opts ...StackUpOption) (err error) {
-	d.lock.Lock()
-	defer d.lock.Unlock()
-
-	d.project, err = d.compileProject(ctx)
-	if err != nil {
-		return err
-	}
-
-	upOptions := stackUpOptions{
-		Services:             d.project.ServiceNames(),
-		Recreate:             api.RecreateDiverged,
-		RecreateDependencies: api.RecreateDiverged,
-		Project:              d.project,
-	}
-
-	for i := range opts {
-		opts[i].applyToStackUp(&upOptions)
-	}
-
-	if len(upOptions.Services) != len(d.project.Services) {
-		sort.Strings(upOptions.Services)
-
-		filteredServices := types.Services{}
-
-		for _, srv := range upOptions.Services {
-			if srvConfig, ok := d.project.Services[srv]; ok {
-				filteredServices[srv] = srvConfig
-			}
-		}
-
-		d.project.Services = filteredServices
-	}
-
-	err = d.composeService.Up(ctx, d.project, api.UpOptions{
-		Create: api.CreateOptions{
-			Build: &api.BuildOptions{
-				Services: upOptions.Services,
-			},
-			Services:             upOptions.Services,
-			Recreate:             upOptions.Recreate,
-			RecreateDependencies: upOptions.RecreateDependencies,
-			RemoveOrphans:        upOptions.RemoveOrphans,
-		},
-		Start: api.StartOptions{
-			Project: upOptions.Project,
-			Wait:    upOptions.Wait,
-		},
-	})
-	if err != nil {
-		return fmt.Errorf("compose up: %w", err)
-	}
-
-	err = d.lookupNetworks(ctx)
-	if err != nil {
-		return err
-	}
-
-	var termSignals []chan bool
-	var reaper *testcontainers.Reaper
-	if !d.provider.Config().Config.RyukDisabled {
-		// NewReaper is deprecated: we need to find a way to create the reaper for compose
-		// bypassing the deprecation.
-		reaper, err = testcontainers.NewReaper(ctx, testcontainers.SessionID(), d.provider, "") //nolint:staticcheck // intentional use of deprecated API for compose
-		if err != nil {
-			return fmt.Errorf("create reaper: %w", err)
-		}
-
-		// Cleanup on error, otherwise set termSignal to nil before successful return.
-		defer func() {
-			if len(termSignals) == 0 {
-				// Need to call Connect at least once to ensure the initial
-				// connection is cleaned up.
-				termSignal, errc := reaper.Connect()
-				if errc != nil {
-					err = errors.Join(err, fmt.Errorf("reaper connect: %w", errc))
-				} else {
-					termSignal <- true
-				}
-			}
-
-			if err == nil {
-				// No need to cleanup.
-				return
-			}
-
-			for _, ts := range termSignals {
-				ts <- true
-			}
-		}()
-
-		// Connect to the reaper and set the termination signal for each network.
-		for _, n := range d.networks {
-			termSignal, err := reaper.Connect()
-			if err != nil {
-				return fmt.Errorf("reaper connect: %w", err)
-			}
-
-			n.SetTerminationSignal(termSignal)
-			termSignals = append(termSignals, termSignal)
-		}
-	}
-
-	errGrpContainers, errGrpCtx := errgroup.WithContext(ctx)
-
-	// Lookup the containers for each service and connect them
-	// to the reaper if needed.
-	var termSignalsMtx sync.Mutex
-	for _, srv := range d.project.Services {
-		srv := srv
-		errGrpContainers.Go(func() error {
-			dc, err := d.lookupContainer(errGrpCtx, srv.Name)
-			if err != nil {
-				return err
-			}
-
-			if reaper != nil {
-				termSignal, err := reaper.Connect()
-				if err != nil {
-					return fmt.Errorf("reaper connect: %w", err)
-				}
-
-				dc.SetTerminationSignal(termSignal)
-
-				termSignalsMtx.Lock()
-				defer termSignalsMtx.Unlock()
-				termSignals = append(termSignals, termSignal)
-			}
-
-			return nil
-		})
-	}
-
-	// wait here for the containers lookup to finish
-	if err := errGrpContainers.Wait(); err != nil {
-		return err
-	}
-
-	if len(d.waitStrategies) == 0 {
-		return nil
-	}
-
-	errGrpWait, errGrpCtx := errgroup.WithContext(ctx)
-
-	for svc, strategy := range d.waitStrategies { // pinning the variables
-		svc := svc
-		strategy := strategy
-
-		errGrpWait.Go(func() error {
-			target, err := d.lookupContainer(errGrpCtx, svc)
-			if err != nil {
-				return err
-			}
-
-			return strategy.WaitUntilReady(errGrpCtx, target)
-		})
-	}
-
-	if err := errGrpWait.Wait(); err != nil {
-		return fmt.Errorf("wait for services: %w", err)
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
-func (d *DockerCompose) WaitForService(s string, strategy wait.Strategy) ComposeStack {
-	d.lock.Lock()
-	defer d.lock.Unlock()
+// NewReaper is deprecated: we need to find a way to create the reaper for compose
+// bypassing the deprecation.
+//nolint:staticcheck // intentional use of deprecated API for compose
 
-	d.waitStrategies[s] = strategy
-	return d
+// Cleanup on error, otherwise set termSignal to nil before successful return.
+
+// Need to call Connect at least once to ensure the initial
+// connection is cleaned up.
+
+// No need to cleanup.
+
+// Connect to the reaper and set the termination signal for each network.
+
+// Lookup the containers for each service and connect them
+// to the reaper if needed.
+
+// wait here for the containers lookup to finish
+
+// pinning the variables
+
+func (d *DockerCompose) WaitForService(s string, strategy wait.Strategy) ComposeStack {
+	_ = "STUB: not implemented"
+	return *new(ComposeStack)
 }
 
 func (d *DockerCompose) WithEnv(m map[string]string) ComposeStack {
-	d.lock.Lock()
-	defer d.lock.Unlock()
-
-	d.projectOptions = append(d.projectOptions, withEnv(m))
-	return d
+	_ = "STUB: not implemented"
+	return *new(ComposeStack)
 }
 
 func (d *DockerCompose) WithOsEnv() ComposeStack {
-	d.lock.Lock()
-	defer d.lock.Unlock()
-
-	d.projectOptions = append(d.projectOptions, cli.WithOsEnv)
-	return d
+	_ = "STUB: not implemented"
+	return *new(ComposeStack)
 }
 
 // cachedContainer returns the cached container for svcName or nil if it doesn't exist.
 func (d *DockerCompose) cachedContainer(svcName string) *testcontainers.DockerContainer {
-	d.containersLock.Lock()
-	defer d.containersLock.Unlock()
-
-	return d.containers[svcName]
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // lookupContainer is used to retrieve the container instance from the cache or the Docker API.
 //
 // Safe for concurrent calls.
 func (d *DockerCompose) lookupContainer(ctx context.Context, svcName string) (*testcontainers.DockerContainer, error) {
-	if c := d.cachedContainer(svcName); c != nil {
-		return c, nil
-	}
-
-	res, err := d.dockerClient.ContainerList(ctx, client.ContainerListOptions{
-		All:     true,
-		Filters: make(client.Filters).Add("label", fmt.Sprintf("%s=%s", api.ProjectLabel, d.name)).Add("label", fmt.Sprintf("%s=%s", api.ServiceLabel, svcName)),
-	})
-	if err != nil {
-		return nil, fmt.Errorf("container list: %w", err)
-	}
-
-	if len(res.Items) == 0 {
-		return nil, fmt.Errorf("no container found for service name %s", svcName)
-	}
-
-	ctr, err := d.provider.ContainerFromType(ctx, res.Items[0])
-	if err != nil {
-		return nil, fmt.Errorf("container from type: %w", err)
-	}
-
-	d.containersLock.Lock()
-	defer d.containersLock.Unlock()
-	d.containers[svcName] = ctr
-
-	return ctr, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // lookupNetworks is used to retrieve the networks that are part of the compose stack.
 //
 // Safe for concurrent calls.
 func (d *DockerCompose) lookupNetworks(ctx context.Context) error {
-	res, err := d.dockerClient.NetworkList(ctx, client.NetworkListOptions{
-		Filters: make(client.Filters).Add("label", fmt.Sprintf("%s=%s", api.ProjectLabel, d.name)),
-	})
-	if err != nil {
-		return fmt.Errorf("network list: %w", err)
-	}
-
-	for _, n := range res.Items {
-		dn := &testcontainers.DockerNetwork{
-			ID:     n.ID,
-			Name:   n.Name,
-			Driver: n.Driver,
-		}
-
-		d.networks[n.ID] = dn
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func (d *DockerCompose) compileProject(ctx context.Context) (*types.Project, error) {
-	proj, err := d.composeService.LoadProject(ctx, api.ProjectLoadOptions{
-		ProjectName:       d.name,
-		ConfigPaths:       d.configs,
-		Profiles:          d.projectProfiles,
-		ProjectOptionsFns: d.projectOptions,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("load project: %w", err)
-	}
-
-	for i, s := range proj.Services {
-		s.CustomLabels = map[string]string{
-			api.ProjectLabel:     proj.Name,
-			api.ServiceLabel:     s.Name,
-			api.VersionLabel:     api.ComposeVersion,
-			api.WorkingDirLabel:  proj.WorkingDir,
-			api.ConfigFilesLabel: strings.Join(proj.ComposeFiles, ","),
-			api.OneoffLabel:      "False", // default, will be overridden by `run` command
-		}
-
-		testcontainers.AddGenericLabels(s.CustomLabels)
-
-		for j, envFile := range s.EnvFiles {
-			// add a label for each env file, indexed by its position
-			s.CustomLabels[fmt.Sprintf("%s.%d", api.EnvironmentFileLabel, j)] = envFile.Path
-		}
-
-		proj.Services[i] = s
-	}
-
-	for key, n := range proj.Networks {
-		n.Labels = map[string]string{
-			api.ProjectLabel: proj.Name,
-			api.NetworkLabel: n.Name,
-			api.VersionLabel: api.ComposeVersion,
-		}
-
-		testcontainers.AddGenericLabels(n.Labels)
-
-		proj.Networks[key] = n
-	}
-
-	return proj, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func withEnv(env map[string]string) func(*cli.ProjectOptions) error {
-	return func(options *cli.ProjectOptions) error {
-		for k, v := range env {
-			if _, ok := options.Environment[k]; ok {
-				return fmt.Errorf("environment with key %s already set", k)
-			}
-			options.Environment[k] = v
-		}
+// default, will be overridden by `run` command
 
-		return nil
-	}
+// add a label for each env file, indexed by its position
+
+func withEnv(env map[string]string) func(*cli.ProjectOptions) error {
+	_ = "STUB: not implemented"
+	return nil
 }

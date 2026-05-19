@@ -1,16 +1,9 @@
 package toxiproxy
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"net"
-	"net/http"
 
 	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const (
@@ -32,98 +25,29 @@ type Container struct {
 // ProxiedEndpoint returns the endpoint for the proxied port in the Toxiproxy container,
 // an error in case the port has no proxied endpoint.
 func (c *Container) ProxiedEndpoint(p int) (string, string, error) {
-	endpoint, ok := c.proxiedEndpoints[p]
-	if !ok {
-		return "", "", errors.New("port not found")
-	}
-
-	return net.SplitHostPort(endpoint)
+	_ = "STUB: not implemented"
+	return "", "", nil
 }
 
 // URI returns the URI of the Toxiproxy container
 func (c *Container) URI(ctx context.Context) (string, error) {
-	portEndpoint, err := c.PortEndpoint(ctx, ControlPort, "http")
-	if err != nil {
-		return "", fmt.Errorf("port endpoint: %w", err)
-	}
-
-	return portEndpoint, nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // Run creates an instance of the Toxiproxy container type
 func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustomizer) (*Container, error) {
+	_ = "STUB: not implemented"
 	// Process custom options first
-	settings := defaultOptions()
-	for _, opt := range opts {
-		if apply, ok := opt.(Option); ok {
-			if err := apply(&settings); err != nil {
-				return nil, fmt.Errorf("apply option: %w", err)
-			}
-		}
-	}
-
-	moduleOpts := []testcontainers.ContainerCustomizer{
-		testcontainers.WithExposedPorts(ControlPort),
-		testcontainers.WithWaitStrategy(wait.ForHTTP("/version").WithPort(ControlPort).WithStatusCodeMatcher(func(status int) bool {
-			return status == http.StatusOK
-		})),
-	}
-
-	// Expose the ports for the proxies, starting from the first proxied port
-	portsInRange := make([]string, 0, len(settings.proxies))
-	for i, proxy := range settings.proxies {
-		proxiedPort := firstProxiedPort + i
-		// Update the listen port of the proxy
-		proxy.Listen = fmt.Sprintf("0.0.0.0:%d", proxiedPort)
-		portsInRange = append(portsInRange, fmt.Sprintf("%d/tcp", proxiedPort))
-	}
-
-	if len(portsInRange) > 0 {
-		moduleOpts = append(moduleOpts, testcontainers.WithExposedPorts(portsInRange...))
-	}
-
-	// Render the config file
-	jsonData, err := json.MarshalIndent(settings.proxies, "", "    ")
-	if err != nil {
-		return nil, fmt.Errorf("marshal config: %w", err)
-	}
-
-	// Apply the config file to the container with the proxies.
-	if len(settings.proxies) > 0 {
-		moduleOpts = append(moduleOpts,
-			testcontainers.WithFiles(testcontainers.ContainerFile{
-				Reader:            bytes.NewReader(jsonData),
-				ContainerFilePath: "/tmp/tc-toxiproxy.json",
-				FileMode:          0o644,
-			}),
-			testcontainers.WithCmd("-host=0.0.0.0", "-config=/tmp/tc-toxiproxy.json"),
-		)
-	}
-
-	ctr, err := testcontainers.Run(ctx, img, append(moduleOpts, opts...)...)
-	var c *Container
-	if ctr != nil {
-		c = &Container{Container: ctr, proxiedEndpoints: make(map[int]string)}
-	}
-
-	if err != nil {
-		return c, fmt.Errorf("run toxiproxy: %w", err)
-	}
-
-	// Map the ports of the proxies to the container, so that we can use them in the tests
-	for _, proxy := range settings.proxies {
-		err := proxy.sanitize()
-		if err != nil {
-			return c, fmt.Errorf("sanitize proxy: %w", err)
-		}
-
-		endpoint, err := c.PortEndpoint(ctx, fmt.Sprintf("%d/tcp", proxy.listenPort), "")
-		if err != nil {
-			return c, fmt.Errorf("port endpoint: %w", err)
-		}
-
-		c.proxiedEndpoints[proxy.listenPort] = endpoint
-	}
-
-	return c, nil
+	return nil, nil
 }
+
+// Expose the ports for the proxies, starting from the first proxied port
+
+// Update the listen port of the proxy
+
+// Render the config file
+
+// Apply the config file to the container with the proxies.
+
+// Map the ports of the proxies to the container, so that we can use them in the tests

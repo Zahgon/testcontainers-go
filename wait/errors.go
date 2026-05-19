@@ -2,11 +2,4 @@
 
 package wait
 
-import (
-	"errors"
-	"syscall"
-)
-
-func isConnRefusedErr(err error) bool {
-	return errors.Is(err, syscall.ECONNREFUSED)
-}
+func isConnRefusedErr(err error) bool { _ = "STUB: not implemented"; return false }

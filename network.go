@@ -4,8 +4,6 @@ import (
 	"context"
 
 	"github.com/moby/moby/api/types/network"
-
-	"github.com/testcontainers/testcontainers-go/internal/core"
 )
 
 // NetworkProvider allows the creation of networks on an arbitrary system
@@ -25,12 +23,14 @@ type DefaultNetwork string
 
 // Deprecated: will be removed in the future.
 func (n DefaultNetwork) ApplyGenericTo(opts *GenericProviderOptions) {
-	opts.defaultNetwork = string(n)
+	_ = "STUB: not implemented"
+	return
 }
 
 // Deprecated: will be removed in the future.
 func (n DefaultNetwork) ApplyDockerTo(opts *DockerProviderOptions) {
-	opts.defaultNetwork = string(n)
+	_ = "STUB: not implemented"
+	return
 }
 
 // Deprecated: will be removed in the future
@@ -51,10 +51,4 @@ type NetworkRequest struct {
 }
 
 // sessionID returns the session ID for the network request.
-func (r NetworkRequest) sessionID() string {
-	if sessionID := r.Labels[core.LabelSessionID]; sessionID != "" {
-		return sessionID
-	}
-
-	return core.SessionID()
-}
+func (r NetworkRequest) sessionID() string { _ = "STUB: not implemented"; return "" }

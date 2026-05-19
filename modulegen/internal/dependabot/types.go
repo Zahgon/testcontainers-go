@@ -1,11 +1,5 @@
 package dependabot
 
-import (
-	"errors"
-	"slices"
-	"sort"
-)
-
 // Config the configuration for the dependabot config file
 type Config struct {
 	Version int     `yaml:"version"`
@@ -31,28 +25,6 @@ type Update struct {
 type Updates []Update
 
 // addUpdate adds an update to the config
-func (c *Config) addUpdate(modulePath string) error {
-	found := false
-	for i := range c.Updates {
-		update := &c.Updates[i]
-		if update.PackageEcosystem == "gomod" {
-			found = true
+func (c *Config) addUpdate(modulePath string) error { _ = "STUB: not implemented"; return nil }
 
-			// look up the update in the gomodsUpdate
-			if slices.Contains(update.Directories, modulePath) {
-				return nil
-			}
-
-			update.Directories = append(update.Directories, modulePath)
-
-			sort.Strings(update.Directories)
-			break
-		}
-	}
-
-	if !found {
-		return errors.New("gomod update not found")
-	}
-
-	return nil
-}
+// look up the update in the gomodsUpdate

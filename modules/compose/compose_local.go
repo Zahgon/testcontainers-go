@@ -2,20 +2,8 @@ package compose
 
 import (
 	"bytes"
-	"context"
-	"fmt"
 	"io"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"strconv"
-	"strings"
-	"sync"
 
-	"github.com/moby/moby/client"
-	"go.yaml.in/yaml/v3"
-
-	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/log"
 	"github.com/testcontainers/testcontainers-go/wait"
 )
@@ -31,15 +19,11 @@ type ComposeVersion interface {
 
 type composeVersion1 struct{}
 
-func (c composeVersion1) Format(parts ...string) string {
-	return strings.Join(parts, "_")
-}
+func (c composeVersion1) Format(parts ...string) string { _ = "STUB: not implemented"; return "" }
 
 type composeVersion2 struct{}
 
-func (c composeVersion2) Format(parts ...string) string {
-	return strings.Join(parts, "-")
-}
+func (c composeVersion2) Format(parts ...string) string { _ = "STUB: not implemented"; return "" }
 
 // Deprecated: use ComposeStack instead
 // LocalDockerCompose represents a Docker Compose execution using local binary
@@ -86,200 +70,98 @@ type ComposeLoggerOption struct {
 // It replaces the global Logging implementation with a user defined one e.g. to aggregate logs from testcontainers
 // with the logs of specific test case
 func WithLogger(logger log.Logger) ComposeLoggerOption {
-	return ComposeLoggerOption{
-		logger: logger,
-	}
+	_ = "STUB: not implemented"
+	return *new(ComposeLoggerOption)
 }
 
 // Deprecated: it will be removed in the next major release
 func (o ComposeLoggerOption) ApplyToLocalCompose(opts *LocalDockerComposeOptions) {
-	opts.Logger = o.logger
+	_ = "STUB: not implemented"
+	return
 }
 
 func (o ComposeLoggerOption) applyToComposeStack(opts *composeStackOptions) error {
-	opts.Logger = o.logger
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // Deprecated: it will be removed in the next major release
 func (f LocalDockerComposeOptionsFunc) ApplyToLocalCompose(opts *LocalDockerComposeOptions) {
-	f(opts)
+	_ = "STUB: not implemented"
+
+	// Deprecated: it will be removed in the next major release
+	// Down executes docker compose down
+	return
 }
 
-// Deprecated: it will be removed in the next major release
-// Down executes docker compose down
-func (dc *LocalDockerCompose) Down() ExecError {
-	return executeCompose(dc, []string{"down", "--remove-orphans", "--volumes"})
-}
+func (dc *LocalDockerCompose) Down() ExecError { _ = "STUB: not implemented"; return *new(ExecError) }
 
 // Deprecated: it will be removed in the next major release
 func (dc *LocalDockerCompose) getDockerComposeEnvironment() map[string]string {
-	environment := map[string]string{}
-
-	composeFileEnvVariableValue := ""
-	var composeFileEnvVariableValueSb121 strings.Builder
-	for _, abs := range dc.absComposeFilePaths {
-		composeFileEnvVariableValueSb121.WriteString(abs + string(os.PathListSeparator))
-	}
-	composeFileEnvVariableValue += composeFileEnvVariableValueSb121.String()
-
-	environment[envProjectName] = dc.Identifier
-	environment[envComposeFile] = composeFileEnvVariableValue
-
-	return environment
-}
-
-// Deprecated: it will be removed in the next major release
-func (dc *LocalDockerCompose) containerNameFromServiceName(service, separator string) string {
-	return dc.Identifier + separator + service
-}
-
-// Deprecated: it will be removed in the next major release
-func (dc *LocalDockerCompose) applyStrategyToRunningContainer() error {
-	cli, err := testcontainers.NewDockerClientWithOpts(context.Background())
-	if err != nil {
-		return fmt.Errorf("new docker client: %w", err)
-	}
-	defer cli.Close()
-
-	for k := range dc.WaitStrategyMap {
-		containerName := dc.containerNameFromServiceName(k.service, "_")
-		composeV2ContainerName := dc.containerNameFromServiceName(k.service, "-")
-		containers, err := cli.ContainerList(context.Background(), client.ContainerListOptions{
-			Filters: make(client.Filters).Add("name", containerName).Add("name", composeV2ContainerName).Add("name", k.service),
-			All:     true,
-		})
-		if err != nil {
-			return fmt.Errorf("container list service %q: %w", k.service, err)
-		}
-
-		if len(containers.Items) == 0 {
-			return fmt.Errorf("service with name %q not found in list of running containers", k.service)
-		}
-
-		// The length should always be a list of 1, since we are matching one service name at a time
-		if l := len(containers.Items); l > 1 {
-			return fmt.Errorf("expecting only one running container for %q but got %d", k.service, l)
-		}
-		container := containers.Items[0]
-		strategy := dc.WaitStrategyMap[k]
-		dockerProvider, err := testcontainers.NewDockerProvider(testcontainers.WithLogger(dc.Logger))
-		if err != nil {
-			return fmt.Errorf("new docker provider: %w", err)
-		}
-		defer dockerProvider.Close()
-
-		dockercontainer := &testcontainers.DockerContainer{ID: container.ID, WaitingFor: strategy}
-		dockercontainer.SetLogger(dc.Logger)
-		dockercontainer.SetProvider(dockerProvider)
-
-		err = strategy.WaitUntilReady(context.Background(), dockercontainer)
-		if err != nil {
-			return fmt.Errorf("wait until ready %v to service %q due: %w", strategy, k.service, err)
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // Deprecated: it will be removed in the next major release
-// Invoke invokes the docker compose
-func (dc *LocalDockerCompose) Invoke() ExecError {
-	return executeCompose(dc, dc.Cmd)
+func (dc *LocalDockerCompose) containerNameFromServiceName(service, separator string) string {
+	_ = "STUB: not implemented"
+	return ""
 }
+
+// Deprecated: it will be removed in the next major release
+func (dc *LocalDockerCompose) applyStrategyToRunningContainer() error {
+	_ = "STUB: not implemented"
+	return nil
+}
+
+// The length should always be a list of 1, since we are matching one service name at a time
+
+// Deprecated: it will be removed in the next major release
+// Invoke invokes the docker compose
+func (dc *LocalDockerCompose) Invoke() ExecError { _ = "STUB: not implemented"; return *new(ExecError) }
 
 // Deprecated: it will be removed in the next major release
 // WaitForService sets the strategy for the service that is to be waited on
 func (dc *LocalDockerCompose) WaitForService(service string, strategy wait.Strategy) DockerComposer {
-	dc.waitStrategySupplied = true
-	dc.WaitStrategyMap[waitService{service: service}] = strategy
-	return dc
+	_ = "STUB: not implemented"
+	return *new(DockerComposer)
 }
 
 // Deprecated: it will be removed in the next major release
 // WithCommand assigns the command
 func (dc *LocalDockerCompose) WithCommand(cmd []string) DockerComposer {
-	dc.Cmd = cmd
-	return dc
+	_ = "STUB: not implemented"
+	return *
+
+	// Deprecated: it will be removed in the next major release
+	// WithEnv assigns the environment
+	new(DockerComposer)
 }
 
-// Deprecated: it will be removed in the next major release
-// WithEnv assigns the environment
 func (dc *LocalDockerCompose) WithEnv(env map[string]string) DockerComposer {
-	dc.Env = env
-	return dc
+	_ = "STUB: not implemented"
+	return *
+
+	// Deprecated: it will be removed in the next major release
+	// WithExposedService sets the strategy for the service that is to be waited on. If multiple strategies
+	// are given for a single service running on different ports, both strategies will be applied on the same container
+	new(DockerComposer)
 }
 
-// Deprecated: it will be removed in the next major release
-// WithExposedService sets the strategy for the service that is to be waited on. If multiple strategies
-// are given for a single service running on different ports, both strategies will be applied on the same container
 func (dc *LocalDockerCompose) WithExposedService(service string, port int, strategy wait.Strategy) DockerComposer {
-	dc.waitStrategySupplied = true
-	dc.WaitStrategyMap[waitService{service: service, publishedPort: port}] = strategy
-	return dc
+	_ = "STUB: not implemented"
+	return *new(DockerComposer)
 }
 
 // Deprecated: it will be removed in the next major release
 // determineVersion checks which version of docker compose is installed
 // depending on the version services names are composed in a different way
-func (dc *LocalDockerCompose) determineVersion() error {
-	execErr := executeCompose(dc, []string{"version", "--short"})
-	if err := execErr.Error; err != nil {
-		return err
-	}
-
-	components := bytes.Split(execErr.StdoutOutput, []byte("."))
-	if componentsLen := len(components); componentsLen < 3 {
-		return fmt.Errorf("expected +3 version components in %s", execErr.StdoutOutput)
-	}
-
-	majorVersion, err := strconv.ParseInt(string(components[0]), 10, 8)
-	if err != nil {
-		return fmt.Errorf("parsing major version: %w", err)
-	}
-
-	switch {
-	case majorVersion == 1:
-		dc.ComposeVersion = composeVersion1{}
-	case majorVersion >= 2:
-		dc.ComposeVersion = composeVersion2{}
-	default:
-		return fmt.Errorf("unexpected compose version %d", majorVersion)
-	}
-
-	return nil
-}
+func (dc *LocalDockerCompose) determineVersion() error { _ = "STUB: not implemented"; return nil }
 
 // Deprecated: it will be removed in the next major release
 // validate checks if the files to be run in the compose are valid YAML files, setting up
 // references to all services in them
-func (dc *LocalDockerCompose) validate() error {
-	type compose struct {
-		Services map[string]any
-	}
-
-	for _, abs := range dc.absComposeFilePaths {
-		c := compose{}
-
-		yamlFile, err := os.ReadFile(abs)
-		if err != nil {
-			return fmt.Errorf("read compose file %q: %w", abs, err)
-		}
-		err = yaml.Unmarshal(yamlFile, &c)
-		if err != nil {
-			return fmt.Errorf("unmarshalling file %q: %w", abs, err)
-		}
-
-		if dc.Services == nil {
-			dc.Services = c.Services
-		} else {
-			for k, v := range c.Services {
-				dc.Services[k] = v
-			}
-		}
-	}
-
-	return nil
-}
+func (dc *LocalDockerCompose) validate() error { _ = "STUB: not implemented"; return nil }
 
 // ExecError is super struct that holds any information about an execution error, so the client code
 // can handle the result
@@ -296,128 +178,21 @@ type ExecError struct {
 func execute(
 	dirContext string, environment map[string]string, binary string, args []string,
 ) ExecError {
-	var errStdout, errStderr error
-
-	cmd := exec.Command(binary, args...)
-	cmd.Dir = dirContext
-	cmd.Env = os.Environ()
-
-	for key, value := range environment {
-		cmd.Env = append(cmd.Env, key+"="+value)
-	}
-
-	stdoutIn, err := cmd.StdoutPipe()
-	if err != nil {
-		return ExecError{
-			Command: cmd.Args,
-			Error:   fmt.Errorf("stdout: %w", err),
-		}
-	}
-
-	stderrIn, err := cmd.StderrPipe()
-	if err != nil {
-		return ExecError{
-			Command: cmd.Args,
-			Error:   fmt.Errorf("stderr: %w", err),
-		}
-	}
-
-	stdout := newCapturingPassThroughWriter(os.Stdout)
-	stderr := newCapturingPassThroughWriter(os.Stderr)
-
-	if err = cmd.Start(); err != nil {
-		execCmd := make([]string, 0, 3+len(args))
-		execCmd = append(execCmd, "Starting command", dirContext, binary)
-		execCmd = append(execCmd, args...)
-
-		return ExecError{
-			// add information about the CMD and arguments used
-			Command:      execCmd,
-			StdoutOutput: stdout.Bytes(),
-			StderrOutput: stderr.Bytes(),
-			Error:        err,
-			Stderr:       errStderr,
-			Stdout:       errStdout,
-		}
-	}
-
-	var wg sync.WaitGroup
-	wg.Add(1)
-
-	go func() {
-		_, errStdout = io.Copy(stdout, stdoutIn)
-		wg.Done()
-	}()
-
-	_, errStderr = io.Copy(stderr, stderrIn)
-	wg.Wait()
-
-	err = cmd.Wait()
-
-	execCmd := make([]string, 0, 3+len(args))
-	execCmd = append(execCmd, "Reading std", dirContext, binary)
-	execCmd = append(execCmd, args...)
-
-	return ExecError{
-		Command:      execCmd,
-		StdoutOutput: stdout.Bytes(),
-		StderrOutput: stderr.Bytes(),
-		Error:        err,
-		Stderr:       errStderr,
-		Stdout:       errStdout,
-	}
+	_ = "STUB: not implemented"
+	return *new(ExecError)
 }
+
+// add information about the CMD and arguments used
 
 // Deprecated: it will be removed in the next major release
 func executeCompose(dc *LocalDockerCompose, args []string) ExecError {
-	if which(dc.Executable) != nil {
-		return ExecError{
-			Command: []string{dc.Executable},
-			Error:   fmt.Errorf("local Docker not found. Is %s on the PATH?", dc.Executable),
-		}
-	}
-
-	environment := dc.getDockerComposeEnvironment()
-	for k, v := range dc.Env {
-		environment[k] = v
-	}
-
-	// initialise the command with the compose subcommand
-	cmds := []string{dc.composeSubcommand}
-	pwd := "."
-	if len(dc.absComposeFilePaths) > 0 {
-		pwd, _ = filepath.Split(dc.absComposeFilePaths[0])
-
-		for _, abs := range dc.absComposeFilePaths {
-			cmds = append(cmds, "-f", abs)
-		}
-	} else {
-		cmds = append(cmds, "-f", "docker-compose.yml")
-	}
-	cmds = append(cmds, args...)
-
-	execErr := execute(pwd, environment, dc.Executable, cmds)
-	err := execErr.Error
-	if err != nil {
-		args := strings.Join(dc.Cmd, " ")
-		return ExecError{
-			Command: []string{dc.Executable, args},
-			Error:   fmt.Errorf("local Docker compose exited abnormally whilst running %s: [%v]. %s", dc.Executable, args, err.Error()),
-		}
-	}
-
-	if dc.waitStrategySupplied {
-		// If the wait strategy has been executed once for all services during startup , disable it so that it is not invoked while tearing down
-		dc.waitStrategySupplied = false
-		if err := dc.applyStrategyToRunningContainer(); err != nil {
-			return ExecError{
-				Error: fmt.Errorf("one or more wait strategies could not be applied to the running containers: %w", err),
-			}
-		}
-	}
-
-	return execErr
+	_ = "STUB: not implemented"
+	return *new(ExecError)
 }
+
+// initialise the command with the compose subcommand
+
+// If the wait strategy has been executed once for all services during startup , disable it so that it is not invoked while tearing down
 
 // capturingPassThroughWriter is a writer that remembers
 // data written to it and passes it to w
@@ -428,30 +203,17 @@ type capturingPassThroughWriter struct {
 
 // newCapturingPassThroughWriter creates new capturingPassThroughWriter
 func newCapturingPassThroughWriter(w io.Writer) *capturingPassThroughWriter {
-	return &capturingPassThroughWriter{
-		w: w,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (w *capturingPassThroughWriter) Write(d []byte) (int, error) {
-	w.buf.Write(d)
-	return w.w.Write(d)
+	_ = "STUB: not implemented"
+	return 0, nil
 }
 
 // Bytes returns bytes written to the writer
-func (w *capturingPassThroughWriter) Bytes() []byte {
-	b := w.buf.Bytes()
-	if b == nil {
-		b = []byte{}
-	}
-	return b
-}
+func (w *capturingPassThroughWriter) Bytes() []byte { _ = "STUB: not implemented"; return nil }
 
 // Which checks if a binary is present in PATH
-func which(binary string) error {
-	if _, err := exec.LookPath(binary); err != nil {
-		return fmt.Errorf("lookup: %w", err)
-	}
-
-	return nil
-}
+func which(binary string) error { _ = "STUB: not implemented"; return nil }
